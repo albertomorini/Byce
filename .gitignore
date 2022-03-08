@@ -1,3 +1,4 @@
 grafana.txt
 .DS_Store
 .gitattributes
+.gitignore
