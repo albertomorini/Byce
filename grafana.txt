@@ -1,0 +1,6 @@
+sudo /bin/systemctl start grafana-server
+
+
+admin - Fixed23
+
+10.0.0.3:3000
