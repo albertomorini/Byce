@@ -123,3 +123,12 @@ An example of the package sent:
 * https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
 * https://www.npmjs.com/package/cordova-plugin-background-mode-fixed
 * https://www.w3schools.com/js/js_date_methods.asp
+
+
+## Grafana
+
+10.0.0.3:3000
+admin/F*23
+## MySql
+10.0.0.3:3306
+root/F*23!!
