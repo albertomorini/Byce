@@ -102,11 +102,11 @@ In the javascript of the Cordova app, before send the request we need to add: ` 
 An example of the package sent:
 ```JSON
 {
-  batteryLevel: '33',
-  inCharge: 'false',
-  name: 'AlbyAndroid',
-  date: '2022/2/8',
-  time: '15:41'
+  "batteryLevel": 33,
+  "inCharge": "false",
+  "name": "AlbyAndroid",
+  "date": "2022/2/8",
+  "time": "15:41"
 }
 ```
 
