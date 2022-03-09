@@ -17,7 +17,7 @@ You can get the battery level and if the devices are charging whenever the batte
 2. Cordova (installable with npm -> `$ sudo npm install -g cordova`)
     * cordova-plugin-battery-status -> get battery info
     * cordova-plugin-device-name -> get the device's name
-    * cordova-plugin-background-mode -> keep the app running in     background
+    * cordova-plugin-background-mode -> keep the app running in background
     * cordova-plugin-advanced-http -> send a POST request via http
 
 3. For android development
@@ -135,6 +135,16 @@ root/F*23!!
 
 
 ## query
---PRENDERE IL VALORE ATTUALE DELLA BATTERIA CON ORARIO E SE è IN CARICA
---Dovrei farne una per dispostivo, quindi magari aggiungere tipo where name="AlbyAndroid"
-SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data);
+
+--ULTIMO LIVELLO DI OGNI DISPOSITIVO
+SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND d2.name = d1.name AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d2.name = d3.name ));
+
++---------+----------+-------------+----------+
+| battery | incharge | name        | tempo    |
++---------+----------+-------------+----------+
+|      13 |        0 | AlbyAndroid | 19:38:00 |
+|      32 |        1 | Device2     | 18:34:00 |
++---------+----------+-------------+----------+
+
+per uno singolo invece:
+SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d3.name = "name" ))

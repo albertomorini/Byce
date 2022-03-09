@@ -22,7 +22,7 @@ function onDeviceReady() {
                 "inCharge": `${status.isPlugged}`,
                 "name": cordova.plugins.deviceName.name,
                 "date": d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(), //getMonth+1, because it's start from 0
-                "time": d.getHours()+":"+d.getMinutes()
+                "time": d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
             }, {
               Authorization: 'OAuth2: token'
             }, function(response) {
