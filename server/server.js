@@ -35,7 +35,7 @@ function storeToFile(pacchetto) {
         if(err){
             console.error(err);
         }
-        console.log("Saved");
+        console.log("Saved to file");
     });
 }
 
@@ -53,6 +53,7 @@ function storeToDB(pacchetto) {
       password: "Fixed23!!",
       database: "byce"
     });
+
 
     //check the connection
     con.connect(function(err) {

@@ -21,7 +21,7 @@ function onDeviceReady() {
                 "batteryLevel": `${status.level}`,
                 "inCharge": `${status.isPlugged}`,
                 "name": cordova.plugins.deviceName.name,
-                "date": d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate(),
+                "date": d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(), //getMonth+1, because it's start from 0
                 "time": d.getHours()+":"+d.getMinutes()
             }, {
               Authorization: 'OAuth2: token'

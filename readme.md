@@ -126,9 +126,15 @@ An example of the package sent:
 
 
 ## Grafana
-
+sudo systemctl restart grafana-server
 10.0.0.3:3000
 admin/F*23
 ## MySql
 10.0.0.3:3306
 root/F*23!!
+
+
+## query
+--PRENDERE IL VALORE ATTUALE DELLA BATTERIA CON ORARIO E SE è IN CARICA
+--Dovrei farne una per dispostivo, quindi magari aggiungere tipo where name="AlbyAndroid"
+SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data);
