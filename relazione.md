@@ -72,10 +72,13 @@ Per la piattaforma Android è necessario installare alcuni tool di sviluppo, i q
 Eseguendo il comando `$ cordova requirements` si otterrà una lista dei requisiti e se questi siano soddisfatti o meno (molto probabilmente servirà una specifica versione di Android SDK ottenibile attraverso Android Studio)
 In seguito, bisogna configurare Android SDK nel proprio terminale, al fine di tale scopo vi è una guida esaustiva al seguente link: https://ionicframework.com/docs/developing/android#configuring-command-line-tools
 
-Per costruire l'apk è necessario aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
+Per costruire l'APK è necessario aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
 
 Vi è bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
-> E' stato incluso il file creato alla creazione dell'apk utilizzata, il file originale trova locazione dentro byce/platforms/android/app/src/
+> E' stato incluso il file creato alla creazione dell'APK utilizzata, il file originale trova locazione dentro byce/platforms/android/app/src/
+
+Una volta imporata l'APK nel dispositivo Android, è richiesto di abilitare il consenso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
+L'APK è stata installata e provata solamente su Android 9.
 
 
 ### Il pacchetto
