@@ -222,7 +222,7 @@ setInterval(()=>{
     cordova.plugins.backgroundMode.unlock(); //is like moveToForeground, but works even if the phone is locked
     cordova.plugins.backgroundMode.moveToBackground();
 }, 240000); //4min
-``
+```
 
 
 
