@@ -15,7 +15,7 @@ http.createServer(function (req, res) {
     storeToFile(body)
     storeToDB(body)
 
-    //we don't need to respond to the client, but let
+    //we don't need to respond to the client, but however we send a message of recived
     res.writeHead(200);
     res.write("Recived!")
     res.end();

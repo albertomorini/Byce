@@ -137,7 +137,15 @@ root/F*23!!
 ## query
 
 --ULTIMO LIVELLO DI OGNI DISPOSITIVO
-SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND d2.name = d1.name AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d2.name = d3.name ));
+SELECT DISTINCT * FROM Dataset d1 WHERE NOT EXISTS
+ (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND d2.name = d1.name AND NOT EXISTS
+      (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d2.name = d3.name ));
+
+
+SELECT * FROM Dataset d1 WHERE NOT EXISTS
+    (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo  AND d2.name = d1.name AND NOT EXISTS
+        (SELECT * FROM Dataset d3 WHERE d3.data> d2.data AND d2.name = d3.name));
+
 
 +---------+----------+-------------+----------+
 | battery | incharge | name        | tempo    |
@@ -147,4 +155,23 @@ SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SE
 +---------+----------+-------------+----------+
 
 per uno singolo invece:
-SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d3.name = "name" ))
+SELECT DISTINCT battery,incharge,name,tempo FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND d2.name = d1.name AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d2.name = d3.name )) AND d1.name='AlbyAndroid';
+
+
+
+
+SELECT DISTINCT battery AS (SELECT name from Dataset where name='AlbyAndroid') FROM Dataset d1 WHERE NOT EXISTS (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo AND d2.name = d1.name AND NOT EXISTS (SELECT * FROM Dataset d3 WHERE d3.data > d2.data AND d2.name = d3.name )) AND d1.name="AlbyAndroid";
+
+
+SELECT battery as 'AlbyAndroid'  FROM Dataset d1 WHERE NOT EXISTS
+    (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo  AND d2.name = d1.name AND NOT EXISTS
+        (SELECT * FROM Dataset d3 WHERE STR_TO_DATE(d3.data, '%Y-%m-%d')> STR_TO_DATE(d2.data, '%Y-%m-%d') AND d2.name = d3.name)) AND d1.name='AlbyAndroid';
+
+SELECT incharge as 'AlbyAndroid'  FROM Dataset d1 WHERE NOT EXISTS
+    (SELECT * FROM Dataset d2 WHERE d2.tempo > d1.tempo  AND d2.name = d1.name AND NOT EXISTS
+        (SELECT * FROM Dataset d3 WHERE STR_TO_DATE(d3.data, '%Y-%m-%d')> STR_TO_DATE(d2.data, '%Y-%m-%d') AND d2.name = d3.name)) AND d1.name='AlbyAndroid';
+
+SELECT battery, tempo FROM Dataset d1 WHERE d1.name='AlbyAndroid';
+SELECT battery, incharge, data, tempo FROM Dataset d1 WHERE d1.name='AlbyAndroid';
+
+TODO: FARE MEGLIO LA PRIMA QUERY + RELAZIONE

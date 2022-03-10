@@ -37,19 +37,6 @@ Il cambiamento dello stato di carica consiste nella variazione della percentuale
 
 In fine, l'app deve poter continuare la sua esecuzione anche in background.
 
-### Il pacchetto
-Il pacchetto inviato è di Content/Type: JSON.
-esempio di pacchetto/JSON
-```JSON
-{
-    "batteryLevel": 89,
-    "inCharge": true,
-    "name": "AlbysAndroid",
-    "date": "2022/03/09",
-    "time": "23:01:46"
-}
-```
-JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraverso un 'dizionario' Javascript, linguaggio sul quale si basa sia l'applicazione che il server (NodeJS).
 
 ### Cordova Apache
 Cordova è un framework Javascript sviluppato da Nitobi (acquisita poi da Apache).
@@ -69,7 +56,7 @@ Il cuore dell'applicazione è rappresentato principalmente da 3 file:
 * config.xml -> file di configurazione generica, quindi il nome dell'app e altre informazioni
 
 all'interno del file Javascript, è necessario dichiarare l'ascoltatore
-```JSON
+```javascript
 document.addEventListener('deviceready', onDeviceReady, false);
 ```
 il quale andrà a chiamare la funzione definita (onDeviceReady in questo caso) non appena l'applicazione sarà in esecuzione.
@@ -88,5 +75,70 @@ In seguito, bisogna configurare Android SDK nel proprio terminale, al fine di ta
 Per costruire l'apk è necessario aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
 
 Vi è bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
---Fornisco il mio file bro
->Tale file si trova dentro platform/blablabla AndroidManifest.xml
+> E' stato incluso il file creato alla creazione dell'apk utilizzata, il file originale trova locazione dentro byce/platforms/android/app/src/
+
+
+### Il pacchetto
+Il pacchetto inviato è di Content/Type: JSON.
+esempio di pacchetto/JSON
+```JSON
+{
+    "batteryLevel": 89,
+    "inCharge": true,
+    "name": "AlbysAndroid",
+    "date": "2022/03/09",
+    "time": "23:01:46"
+}
+```
+JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraverso un 'dizionario' Javascript, linguaggio sul quale si basa sia l'applicazione che il server (NodeJS).
+
+Utilizziamo `cordova.plugin.http.setDataSerializer('json');` per indicare all'app di sfruttare tale codifica.
+
+
+## Il server
+
+### struttura generale
+Il server si avvia attraverso il comando `node server/server.js` quindi inizializza una socket con indirizzo IP 10.0.0.3 e porta 8124.
+
+Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le serializzerà in un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
+
+Il server non è tenuto a rispondere ai client, anche perché i client non sono stati programmati per elaborare la ricezione di richieste. Ad ogni modo inviamo comunque un messaggio di conferma di ricezione (utile nel debug e in caso per sviluppi futuri).
+
+### NodeJS
+Node consente attraverso l'engine V8 di Chromium di eseguire script javascript al di fuori di un browser.
+L'installazione può avvenire attraverso il gestore di pacchetti di Linux, quindi `$ sudo apt-get instal nodejs`
+
+Il programma avvierà un server http in ascolto sulla porta 8124 all'indirizzo IP del computer sul quale avverrà l'esecuzione (per comodità si è ricorso all'utilizzo dell'IP statico 10.0.0.3).
+Per implementare i vari obiettivi, è necessario importare alcuni moduli (librerie), installabili attraverso NPM (Node Package Manager) `$ npm install pacchetto`
+una volta aggiunti i pacchetti richiesti, bisogna includerli nel file server.js
+```javascript
+var http = require('http'); //module for the creation of the server
+var fs = require("fs"); //store a CSV with the messages recived, useful for debug
+var mysql = require('mysql'); //module to connect with MySQL
+
+```
+
+verrà utilizzata la funzione `JSON.parse(pacchetto)` per convertire il messaggio JSON ricevuto in un 'dizionario' javascript.
+
+### Il database
+Il database è stato realizzato attraverso il sistema di gestione MySQL di Oracle.
+Per l'installazione basta eseguire `$ sudo apt install mysql-server`
+In seguito eseguiamo il login `$ mysql -h localhost -P 3306 -u root -p` e cambiamo la password di default dell'utente root (è possibile anche aggiungere un nuovo user nel caso lo si desideri)
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourPsw'
+```
+
+La creazione del database avviene tramite le seguenti query:
+```sql
+CREATE DATABASE byce;
+CONNECT byce;
+--Creiamo la tabella 'Dataset' dove inseriremo i dati
+create table Dataset(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    battery INTEGER NOT NULL,
+    incharge BOOLEAN NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    data DATE NOT NULL,
+    tempo TIME NOT NULL
+);
+```
