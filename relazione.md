@@ -1,46 +1,45 @@
 # <p style="text-align:center">Byce </p>
-___________
+
 <div style="font-size: 16px">
     <p style="font-size: 20px"> Progetto di Internet Of Things di Alberto Morini (141986) </p>
     <b>Anno accademico:</b> 2021/2022
 
 </div>
 
-WORKING IN PROGRESS
-## Indice
-1. lol
 
-## Byce, a battery logger.
+
+
+## Indice
+1. [Intro] (##Byce, a battery logger)
+
+## Byce, a battery logger
 Il progetto si suddivide in due parti: Byce e il server.
 
 Byce è un'app, progettata con l'obiettivo di rilevare il livello della batteria dei dispositivi Android e in seguito, inviare i dati al server.
-
 L'applicazione può essere estesa anche al sistema operativo iOS, poiché è stata sviluppata attraverso Apache Cordova, quindi non si tratta di un'app nativa bensì ibrida.
 Per l'esame è stata realizzata solamente la versione per Android.
 
 Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
-
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
 
 ### Study case:
-L'idea è nata da una necessità: un ristorante che utilizza dei tablet per ordinare il cibo e sfogliare il menù; alla fine del servizio un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
+L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
+Con questa soluzione, il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
 
-Invece, con questa soluzione il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
-
-L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio device ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
+L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio telefono ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
 
 
 ## L'app byce
 
 ### Struttura generale
 
-L'applicazione deve ottenere la percentuale di carica e comunicare con il server.
+L'applicazione deve ottenere il livello di carica e comunicare con il server.
 
 In seguito, è necessario che il dispositivo sia riconoscibile, in altre parole il server deve sapere chi ha mandato tali dati.
-
 Per tale obiettivo vi sono due soluzioni: utilizzare il MAC address oppure sfruttare il nome del dispositivo (eg. "Alby's iPhone"/"Samsung S5"/"Tablet21"). Quest'ultima idea è la soluzione ottimale, poiché poiché non necessita l'implementazione di un registro associativo tra MAC address e un'ulteriore nome; inoltre molti dispositivi (se si pensa a quelli personali) hanno già un nome personalizzato e quindi riconoscibile dall'utente.
 
-Il cambiamento dello stato di carica consiste nella variazione della percentuale o nella variazione dell'alimentazione da corrente (collegato/scollegato). Ad ogni cambiamento, l'applicazione scatena un evento il quale sarà ascoltato da un'apposita funzione che si occuperà quindi di rilevare i dati precedentemente elencati, calcolare un timestamp e in seguito inviare una POST request al server in ascolto.
+Il cambiamento dello stato di carica consiste nella variazione della percentuale o nella variazione dell'alimentazione da corrente (collegato/scollegato).
+Ad ogni cambiamento, l'applicazione scatena un evento il quale sarà ascoltato da un'apposita funzione che si occuperà quindi di rilevare i dati precedentemente elencati, calcolare un timestamp e in seguito inviare una POST request al server in ascolto.
 
 In fine, l'app deve essere in grado di continuare la sua esecuzione anche in background.
 
@@ -48,10 +47,9 @@ In fine, l'app deve essere in grado di continuare la sua esecuzione anche in bac
 ### Cordova Apache
 Cordova è un framework Javascript sviluppato da Nitobi (acquisita poi da Apache).
 Per eseguire Cordova è fondamentale aver già installato NodeJS e NPM.
+Quindi `$ sudo npm install -g cordova` (viene utilizzato il comando "sudo" poiché alcuni sistemi richiedono i requisiti di amministratore).
 
-Quindi `$ sudo npm install -g cordova` (viene utilizzato il comando "sudo" poiché alcuni sistemi richiedono i requisiti amministratore).
-
-Al fine di implementare tutte le funzionalità richieste occorre installare dei plugin aggiuntivi:
+Al fine di implementare tutte le funzionalità richieste, occorre aggiungere alcuni plugin:
 * cordova-plugin-battery-status -> si interfaccia con la batteria del device
 * cordova-plugin-device-name -> ottiene il nome del dispositivo
 * cordova-plugin-background-mode -> permette l'esecuzione in background
@@ -61,14 +59,14 @@ Al fine di implementare tutte le funzionalità richieste occorre installare dei 
 
 Il cuore dell'applicazione è rappresentato principalmente da 3 file:
 * www/index.html -> l'interfaccia grafica
-* www/js/index.js -> le funzioni che vogliono eseguire
-* config.xml -> file di configurazione generica, quindi il nome dell'app e altre informazioni
+* www/js/index.js -> le funzioni che si vogliono eseguire
+* config.xml -> file di configurazione generico, quindi il nome dell'app e altre informazioni
 
 all'interno del file Javascript, è necessario dichiarare l'ascoltatore
 ```javascript
 document.addEventListener('deviceready', onDeviceReady, false);
 ```
-il quale andrà a chiamare la funzione definita (onDeviceReady in questo caso) non appena l'applicazione sarà in esecuzione.
+il quale andrà a chiamare la funzione definita (onDeviceReady in questo caso) non appena l'applicativo verrà avviato.
 
 
 ### Android
@@ -78,9 +76,9 @@ Per la piattaforma Android si richiede di installare alcuni tool di sviluppo, i 
 * Gradle `$ sudo apt-get install gradle`
 * Un device virtuale (il quale deve essere acceso), installabile tramite Android Studio
 
-Eseguendo il comando `$ cordova requirements` si otterrà una lista dei requisiti e se questi siano soddisfatti o meno (molto probabilmente servirà una specifica versione di Android SDK ottenibile attraverso Android Studio).
+Eseguendo il comando `$ cordova requirements` si otterrà una lista dei requisiti e se questi siano soddisfatti (molto probabilmente servirà una specifica versione di Android SDK, ottenibile attraverso Android Studio).
 
-Successivamente bisogna configurare Android SDK nel proprio terminale, quindi modificando il file ".bashrc" aggiungendo:
+Successivamente bisogna configurare Android SDK nel proprio terminale, quindi aggiungendo al file ".bashrc":
 ```shell
 export ANDROID_SDK_ROOT=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
@@ -88,20 +86,22 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
 export ANDROID_HOME=$Home/Android/
 ```
-in seguito, si deve ricaricare il file di preferenze attraverso `$ source .bashrc`
+in seguito, si deve ricaricare tale file attraverso `$ source .bashrc`
 
 
 Per costruire l'APK occorre aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
 
-Vi è bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
-> E' stato incluso il file generato alla creazione dell'APK utilizzata, solitamente il file si colloca in <i>"byce/platforms/android/app/src/"</i> dopo la costruzione dell'applicativo
+Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
+> E' stato incluso il file generato alla creazione dell'APK utilizzata, solitamente il file si colloca in *"byce/platforms/android/app/src/"* dopo la costruzione dell'applicativo
 
-Una volta imporata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
+Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
 
 
 ### Il pacchetto
-Il pacchetto inviato è di Content/Type: JSON.
-esempio di pacchetto/JSON
+Il pacchetto inviato tramite il protocollo HTTP è codificato tramite JSON, per definire tale Content/Type si utilizza:
+`cordova.plugin.http.setDataSerializer('json');`
+
+>esempio di messaggio
 ```JSON
 {
     "batteryLevel": 89,
@@ -111,19 +111,18 @@ esempio di pacchetto/JSON
     "time": "23:01:46"
 }
 ```
-JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraverso un 'dizionario' Javascript, linguaggio sul quale si basa sia l'applicazione che il server (NodeJS).
 
-Utilizziamo `cordova.plugin.http.setDataSerializer('json');` per sfruttare tale codifica nei messaggi HTTP.
+JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraverso un 'dizionario' Javascript, linguaggio sul quale si basa sia l'applicazione che il server (NodeJS).
 
 
 ## Il server
 
 ### struttura generale
-Il server si avvia attraverso il comando `node server/server.js` quindi istanzia una socket con indirizzo IP 10.0.0.3 e porta 8124.
+Il server si avvia attraverso il comando `node server/server.js` quindi istanzia una socket con indirizzo IP `10.0.0.3` e porta `8124`.
 
-Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le serializzerà in un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
+Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le aggiungerà in coda a un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
 
-Il server non è tenuto a rispondere ai client, anche perché i client non sono stati programmati per elaborare la ricezione di richieste. Tuttavia si invia comunque un messaggio di conferma di ricezione (utile nel debug e in caso per sviluppi futuri).
+Il server non risponderà ai client, non ne ha motivo, inoltre i client non sono stati programmati per elaborare la ricezione delle richieste.
 
 ### NodeJS
 Node consente attraverso l'engine V8 di Chromium di eseguire script javascript al di fuori di un browser.
@@ -131,7 +130,7 @@ L'installazione può avvenire attraverso il gestore di pacchetti di Linux, quind
 
 Il programma avvierà un server http in ascolto sulla porta `8124` all'indirizzo IP del computer sul quale avverrà l'esecuzione (per comodità si è ricorso all'utilizzo dell'IP statico `10.0.0.3`).
 
-Per implementare i vari obiettivi, è necessario importare alcuni moduli (librerie), installabili attraverso NPM (Node Package Manager) `$ npm install pacchetto`
+Per implementare i vari obiettivi, è necessario importare alcuni moduli aggiungibili attraverso NPM (Node Package Manager) `$ npm install pacchetto`
 
 Una volta aggiunti i pacchetti richiesti, bisogna includerli nel file server.js
 ```javascript
@@ -210,12 +209,11 @@ A configurazione terminata, si può creare una Dashboard dedicata dove si potrà
 
 
 Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background da più di 5 minuti circa.
-
 Per ovviare questo probelma è stata implementata una scappatoia, costituita dal portare il processo in "foreground" e nuovamente in "background".
-
 Purtroppo questa soluzione vede il display del dispositivo accendersi (poiché si porta in primo piano l'app) ogni 5 minuti.
 
-La scelta di impostare un timer ogni 5 minuti è stata voluta solamente per ottenere una monitorazione continua dei devices; nell'adozione del sistema in un mondo reale il timer può essere tranquillamente impostato a un determinato delta  tempo
+La scelta di impostare un timer ogni 5 minuti è stata voluta solamente per monitorare continuamente i devices; nell'implementazione del sistema in un mondo reale, dove raramente è necessaria un'osservazione costante, il timer può essere impostato a un tempo predefinito (eg. ogni ora/ogni 2 ore)
+
 
 ```javascript
 setInterval(()=>{
@@ -229,16 +227,20 @@ setInterval(()=>{
 ### Sviluppi futuri
 
 1. Estendere l'applicativo anche alla piattaforma iOS
---2. Consentire al client di specificare l'indirizzo IP del server, in modo da permettere una maggior estendibilità di rete.
+2. Consentire al client di specificare l'indirizzo IP del server, in modo da permettere una configurazione semplificata del sistema.
 3. Rilevare ulteriori risorse come utilizzo della CPU e RAM, memoria utilizzata etc.
 
 
 ### Tecnologie utilizzate
 
-* Samsung Galaxy S5 con Android 9, per eseguire l'applicazione (AlbyAndroid nel database)
+* Lista device:
+    - Samsung Galaxy S5 con Android 9 (AlbyAndroid nel database)
+    - Qualcosa con Android 10 (SS88)
 * Ubuntu 21.10, come server.
     - Java JDK 1.8.0
     - NodeJS v16.14.0
     - NPM v8.5.2
 
 * Rete privata con indirizzi di classe A (`10.0.0.0/24`)
+    - IP server: 10.0.0.3
+    - Devices con DHCP
