@@ -10,8 +10,28 @@
 
 
 ## Indice
-1. [Intro](##Byce, a battery logger)
+1. [Intro](#Byce,-a-battery-logger)
     1. [Study case](#Study-case)
+2. [L'app](#App-byce)
+    1. [Architettura app](#Architettura-app)
+    2. [Cordova Apache](#Cordova-Apache)
+        - [Il motore](#Il motore)
+    3. [Android](#Android)
+3. [Il pacchetto](#Il-pacchetto)
+4. [Il server](#Il-server)
+    1. [Architettura server](#Architettura-server)
+    2. [NodeJS](#NodeJS)
+    3. [Il database](#Il-database)
+    4. [Grafana](#Grafana)
+5. [Conclusioni](#Conclusioni)
+    1. [Problematiche](#Problematiche)
+    2. [Sviluppi futuri](#Sviluppi-futuri)
+    3. [Tecnologie utilizzate](#Tecnologie-utilizzate)
+
+
+
+
+
 
 ## Byce, a battery logger
 Il progetto si suddivide in due parti: Byce e il server.
@@ -30,9 +50,9 @@ Invece, con questa soluzione, il cameriere può in pochi secondi ottenere una pa
 L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio telefono ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
 
 
-## L'app byce
+## App byce
 
-### Struttura generale
+### Architettura app
 
 L'applicazione deve ottenere il livello di carica e comunicare con il server.
 
@@ -98,7 +118,7 @@ Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.x
 Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
 
 
-### Il pacchetto
+## Il pacchetto
 Il pacchetto inviato tramite il protocollo HTTP è codificato in JSON, per definire tale Content/Type si utilizza:
 `cordova.plugin.http.setDataSerializer('json');`
 
@@ -118,7 +138,7 @@ JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraver
 
 ## Il server
 
-### struttura generale
+### Architettura server
 Il server si avvia con il comando `node server/server.js` quindi istanzia una socket con indirizzo IP `10.0.0.3` e porta `8124`.
 
 Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le aggiungerà in coda a un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
