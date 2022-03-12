@@ -133,7 +133,7 @@ JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraver
 ## Il server
 
 ### Architettura server
-Il server si avvia con il comando `node server/server.js` quindi istanzia una socket con indirizzo IP `10.0.0.3` e porta `8124`.
+Il server si avvia con il comando `node server/server.js` quindi crea una socket con indirizzo IP `10.0.0.3` e porta `8124`.
 
 Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le aggiungerà in coda a un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
 
@@ -143,9 +143,9 @@ Il server non risponderà ai client, non ne ha motivo, inoltre i client non sono
 Node consente attraverso l'engine V8 di Chromium di eseguire script javascript al di fuori di un browser.
 L'installazione può avvenire attraverso il gestore di pacchetti di Linux, quindi `$ sudo apt-get instal nodejs`
 
-Il programma avvierà un server http in ascolto sulla porta `8124` all'indirizzo IP del computer sul quale avverrà l'esecuzione (per comodità si è ricorso all'utilizzo dell'IP statico `10.0.0.3`).
+Il programma avvierà un server HTTP in ascolto sulla porta `8124` all'indirizzo IP del computer sul quale avverrà l'esecuzione (in questo caso l'IP è statico: `10.0.0.3`).
 
-Per implementare i vari obiettivi, è necessario importare alcuni moduli aggiungibili attraverso NPM (Node Package Manager) `$ npm install pacchetto`
+Per implementare i vari obiettivi, è necessario importare alcuni moduli ottenibili attraverso NPM (Node Package Manager) `$ npm install $pacchetto`
 
 Una volta aggiunti i pacchetti richiesti, bisogna includerli nel file server.js
 ```javascript
@@ -158,7 +158,7 @@ var mysql = require('mysql'); //module to connect with MySQL
 verrà utilizzata la funzione `JSON.parse(pacchetto)` per convertire il messaggio JSON ricevuto in un 'dizionario' javascript.
 
 ### Il database
-Il database è stato tramite MySQL di Oracle.
+Il database è stato costruito tramite MySQL di Oracle.
 
 Per l'installazione si esegue a terminale `$ sudo apt install mysql-server`
 
@@ -201,10 +201,10 @@ con.connect(function(err) {
 ```
 
 ### Grafana
-Grafana è un software che consente di estrapolare informazioni da un database e rappresentarli attraverso grafici interattivi e vari indicatori.
+Grafana è un software che consente di estrapolare informazioni da un database e rappresentarle attraverso grafici interattivi e vari indicatori.
 
 L'installazione (sistemi Debian) avviene eseguendo i seguenti comandi nel terminale:
-```shell
+```sh
 sudo apt-get install -y adduser libfontconfig1
 wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.4.3_amd64.deb
 sudo dpkg -i grafana-enterprise_8.4.3_amd64.deb
@@ -212,13 +212,14 @@ sudo dpkg -i grafana-enterprise_8.4.3_amd64.deb
 
 Successivamente, si avvia il processo Grafana tramite `$ sudo service grafana-server start` il quale sarà disponibile presso la porta `3000`.
 
-Una volta effettuato l'accesso e cambiata la password di default, si dovrà aggiungere il plugin MySQL per consentire a Grafana di interrogare la base di dati.
+Una volta effettuato l'accesso e cambiata la password di default, si dovrà aggiungere il plugin MySQL per consentire a Grafana di interrogare la base di dati.<br>
 A configurazione terminata, si può creare una Dashboard dedicata dove si potrà aggiungere vari "pannelli"/widget, i quali forniranno una rappresentazione grafica della query che si desidera processare.
 
-***Query & backup*** all'interno della folder *'server'* vi è il file di backup della dashboard Byce (è possibile visionare cone esattezza i widget creati importando il file di preferenze su Grafana).
-Inoltre è presente il file *queryGrafana.sql* contenente le query usate all'interno dei rispettivi pannelli.
+***Query & backup*** all'interno della folder *'server'* vi è il file di backup della dashboard Byce (è possibile visionare cone esattezza i widget creati importando il file di preferenze).<br>
+Inoltre è presente il file *"queryGrafana.sql"* contenente le query usate all'interno dei rispettivi pannelli.
 
 >Nella seguente schermata è rappresentata la dashboard di Grafana, in questo caso il dispositivo 'S88plus' era collegato a una presa di corrente (pannello "charging"=1) mentre 'AlbyAndroid' era alimentato dalla sola batteria (attualmente al 37%).
+<a href="https://github.com/albertomorini/Byce/blob/main/imgExample/proofOfWork.jpg">Proof of work </a>(di circa 1h dopo)
 
 ![GrafanaScreen](https://github.com/albertomorini/Byce/blob/main/imgExample/grafanaScreen.png)
 
@@ -227,9 +228,8 @@ Inoltre è presente il file *queryGrafana.sql* contenente le query usate all'int
 
 ### Problematiche
 
-
-Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background da più di 5 minuti circa.
-Per ovviare questo probelma è stata implementata una scappatoia, costituita dal portare il processo in "foreground" e nuovamente in "background".
+Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background dopo circa 5 minuti.<br>
+Per ovviare questo probelma è stata implementata una scappatoia, costituita dal portare il processo in "foreground" e nuovamente in "background".<br>
 Purtroppo questa soluzione vede il display del dispositivo accendersi (poiché si porta in primo piano l'app) ogni 5 minuti.
 
 
@@ -240,11 +240,9 @@ setInterval(()=>{
 }, 240000); //4min
 ```
 
-
-
 ### Sviluppi futuri
 
-1. Estendere l'applicativo anche alla piattaforma iOS
+1. Estendere l'applicativo alla piattaforma iOS
 2. Consentire al client di specificare l'indirizzo IP del server, in modo da permettere una configurazione semplificata del sistema.
 3. Rilevare ulteriori risorse come utilizzo della CPU e RAM, memoria utilizzata etc.
 
@@ -262,5 +260,5 @@ setInterval(()=>{
     - Cordova v.11.0.0
 
 * Rete privata con indirizzi di classe A (`10.0.0.0/24`)
-    - IP server: 10.0.0.3
+    - IP server: `10.0.0.3`
     - Devices con DHCP
