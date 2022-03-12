@@ -122,8 +122,11 @@ Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.x
 
 Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
 
+<div style="img{width: 300px; height: 400px; display=inline}">
 ![App1](https://github.com/albertomorini/Byce/blob/main/imgExample/app1.png)
 ![App2](https://github.com/albertomorini/Byce/blob/main/imgExample/app2.png)
+</div>
+
 
 ## Il pacchetto
 Il pacchetto inviato tramite il protocollo HTTP è codificato in JSON, per definire tale Content/Type si utilizza:
