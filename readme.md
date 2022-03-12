@@ -3,7 +3,9 @@
 ## Progetto di Internet Of Things
 
 **Studente** Alberto Morini (mat. 141986)
+
 **Docente:** Professore Ivan Scagnetto
+
 **Anno accademico:** 2021/2022
 
 
