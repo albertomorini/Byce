@@ -11,6 +11,7 @@
 
 ## Indice
 1. [Intro] (##Byce, a battery logger)
+    1. [Study case] (#Study-case)
 
 ## Byce, a battery logger
 Il progetto si suddivide in due parti: Byce e il server.
@@ -22,9 +23,9 @@ Per l'esame è stata realizzata solamente la versione per Android.
 Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
 
-### Study case:
-L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
-Con questa soluzione, il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
+### Study case
+L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio, un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
+Invece, con questa soluzione, il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
 
 L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio telefono ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
 
@@ -46,7 +47,7 @@ In fine, l'app deve essere in grado di continuare la sua esecuzione anche in bac
 
 ### Cordova Apache
 Cordova è un framework Javascript sviluppato da Nitobi (acquisita poi da Apache).
-Per eseguire Cordova è fondamentale aver già installato NodeJS e NPM.
+Per eseguire Cordova è fondamentale l'installazione di NodeJS e NPM.
 Quindi `$ sudo npm install -g cordova` (viene utilizzato il comando "sudo" poiché alcuni sistemi richiedono i requisiti di amministratore).
 
 Al fine di implementare tutte le funzionalità richieste, occorre aggiungere alcuni plugin:
@@ -92,13 +93,13 @@ in seguito, si deve ricaricare tale file attraverso `$ source .bashrc`
 Per costruire l'APK occorre aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
 
 Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
-> E' stato incluso il file generato alla creazione dell'APK utilizzata, solitamente il file si colloca in *"byce/platforms/android/app/src/"* dopo la costruzione dell'applicativo
+> E' stato incluso il file generato alla creazione dell'APK utilizzata, solitamente il file si colloca in *"byce/platforms/android/app/src/"* dopo l'aggiunta della piattaforma
 
 Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
 
 
 ### Il pacchetto
-Il pacchetto inviato tramite il protocollo HTTP è codificato tramite JSON, per definire tale Content/Type si utilizza:
+Il pacchetto inviato tramite il protocollo HTTP è codificato in JSON, per definire tale Content/Type si utilizza:
 `cordova.plugin.http.setDataSerializer('json');`
 
 >esempio di messaggio
@@ -118,7 +119,7 @@ JSON rappresenta un enorme vantaggio, poiché i dati vengono manipolati attraver
 ## Il server
 
 ### struttura generale
-Il server si avvia attraverso il comando `node server/server.js` quindi istanzia una socket con indirizzo IP `10.0.0.3` e porta `8124`.
+Il server si avvia con il comando `node server/server.js` quindi istanzia una socket con indirizzo IP `10.0.0.3` e porta `8124`.
 
 Il processo alla ricezione di un messaggio estrapolerà le informazioni contenute, le aggiungerà in coda a un file con formato CSV (utile per il debug) e in seguito, instaurerà una connessione con il database MySQL dove processerà una query di inserimento.
 
@@ -143,9 +144,9 @@ var mysql = require('mysql'); //module to connect with MySQL
 verrà utilizzata la funzione `JSON.parse(pacchetto)` per convertire il messaggio JSON ricevuto in un 'dizionario' javascript.
 
 ### Il database
-Il database è stato realizzato attraverso il sistema di gestione MySQL di Oracle.
+Il database è stato tramite MySQL di Oracle.
 
-Per l'installazione basta eseguire `$ sudo apt install mysql-server`
+Per l'installazione si esegue a terminale `$ sudo apt install mysql-server`
 
 Successivamente si effettua il login `$ mysql -h localhost -P 3306 -u root -p` e si cambia la password default dell'utente root (è possibile anche aggiungere un nuovo user nel caso lo si desideri)
 ```sql
@@ -156,7 +157,7 @@ La creazione del database avviene tramite le seguenti query:
 ```sql
 CREATE DATABASE byce;
 CONNECT byce;
---Si crei la tabella 'Dataset' dove verranno inseriti i dati
+--Viene creata la tabella 'Dataset' dove verranno inseriti i dati
 create table Dataset(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     battery INTEGER NOT NULL,
@@ -166,7 +167,8 @@ create table Dataset(
     tempo TIME NOT NULL
 );
 ```
-L'inserimento dei dati nella base di dati avviene attraverso la parte NodeJS del server
+L'inserimento dei dati nel database avviene con NodeJS.
+
 ```javascript
 let jsonPack = JSON.parse(pacchetto);
 ....
@@ -194,10 +196,10 @@ wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.4.3_amd64.de
 sudo dpkg -i grafana-enterprise_8.4.3_amd64.deb
 ```
 
-Successivamente, si avvia il processo Grafana tramite `$ sudo systemctl restart grafana-server` il quale sarà disponibile presso la porta `3000`.
+Successivamente, si avvia il processo Grafana tramite `$ sudo service grafana-server start` il quale sarà disponibile presso la porta `3000`.
 
 Una volta effettuato l'accesso e cambiata la password di default, si dovrà aggiungere il plugin MySQL per consentire a Grafana di interrogare la base di dati.
-A configurazione terminata, si può creare una Dashboard dedicata dove si potrà aggiungere vari "pannelli" i quali forniranno una rappresentazione grafica della query che si desidererà inserire.
+A configurazione terminata, si può creare una Dashboard dedicata dove si potrà aggiungere vari "pannelli"/widget, i quali forniranno una rappresentazione grafica della query che si desidera processare.
 
 
 ## Conclusioni
@@ -211,8 +213,6 @@ A configurazione terminata, si può creare una Dashboard dedicata dove si potrà
 Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background da più di 5 minuti circa.
 Per ovviare questo probelma è stata implementata una scappatoia, costituita dal portare il processo in "foreground" e nuovamente in "background".
 Purtroppo questa soluzione vede il display del dispositivo accendersi (poiché si porta in primo piano l'app) ogni 5 minuti.
-
-La scelta di impostare un timer ogni 5 minuti è stata voluta solamente per monitorare continuamente i devices; nell'implementazione del sistema in un mondo reale, dove raramente è necessaria un'osservazione costante, il timer può essere impostato a un tempo predefinito (eg. ogni ora/ogni 2 ore)
 
 
 ```javascript
@@ -235,11 +235,13 @@ setInterval(()=>{
 
 * Lista device:
     - Samsung Galaxy S5 con Android 9 (AlbyAndroid nel database)
-    - Qualcosa con Android 10 (SS88)
+    - Doogee S88plus con Android 10 (S88plus nel database)
+
 * Ubuntu 21.10, come server.
     - Java JDK 1.8.0
     - NodeJS v16.14.0
     - NPM v8.5.2
+    - Cordova v.11.0.0
 
 * Rete privata con indirizzi di classe A (`10.0.0.0/24`)
     - IP server: 10.0.0.3
