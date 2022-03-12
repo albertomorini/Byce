@@ -1,7 +1,11 @@
 # <p style="text-align:center">Byce </p>
 
-<div style="font-size: 16px">
-    <p style="font-size: 20px"> Progetto di Internet Of Things di Alberto Morini (141986) </p>
+<div style="font-size: 17px">
+    <p style="font-size: 20px"> Progetto di Internet Of Things </p>
+    <b>Studente: </b> Alberto Morini (mat. 141986)
+    <br>
+    <b>Docente: </b> Professore Ivan Scagnetto
+    <br>
     <b>Anno accademico:</b> 2021/2022
 
 </div>
@@ -10,12 +14,12 @@
 
 
 ## Indice
-1. [Intro](#Byce,-a-battery-logger)
-    1. [Study case](#Study-case)
+1. [Intro](#byce-a-battery-logger)
+    1. [L'idea](#L-idea)
 2. [L'app](#App-byce)
     1. [Architettura app](#Architettura-app)
     2. [Cordova Apache](#Cordova-Apache)
-        - [Il motore](#Il motore)
+        - [Il motore](#Il-motore)
     3. [Android](#Android)
 3. [Il pacchetto](#Il-pacchetto)
 4. [Il server](#Il-server)
@@ -23,6 +27,7 @@
     2. [NodeJS](#NodeJS)
     3. [Il database](#Il-database)
     4. [Grafana](#Grafana)
+        - [Query](#Query)
 5. [Conclusioni](#Conclusioni)
     1. [Problematiche](#Problematiche)
     2. [Sviluppi futuri](#Sviluppi-futuri)
@@ -43,7 +48,7 @@ Per l'esame è stata realizzata solamente la versione per Android.
 Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
 
-### Study case
+### L'idea
 L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio, un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
 Invece, con questa soluzione, il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
 
@@ -221,13 +226,15 @@ Successivamente, si avvia il processo Grafana tramite `$ sudo service grafana-se
 Una volta effettuato l'accesso e cambiata la password di default, si dovrà aggiungere il plugin MySQL per consentire a Grafana di interrogare la base di dati.
 A configurazione terminata, si può creare una Dashboard dedicata dove si potrà aggiungere vari "pannelli"/widget, i quali forniranno una rappresentazione grafica della query che si desidera processare.
 
+***Query & backup*** all'interno della folder *'server'* vi è il file di backup della dashboard Byce (è possibile visionare cone esattezza i widget creati importando il file di preferenze su Grafana).
+Inoltre è presente il file *queryGrafana.sql* contenente le query usate all'interno dei rispettivi pannelli.
+
+![GrafanaScreen](https://github.com/albertomorini/Byce/blob/main/imgExample/grafanaScreen.png)
+
 
 ## Conclusioni
 
 ### Problematiche
-
-
-
 
 
 Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background da più di 5 minuti circa.
