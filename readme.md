@@ -19,7 +19,6 @@
 2. [L'app](#App-byce)
     1. [Architettura app](#Architettura-app)
     2. [Cordova Apache](#Cordova-Apache)
-        - [Il motore](#Il-motore)
     3. [Android](#Android)
 3. [Il pacchetto](#Il-pacchetto)
 4. [Il server](#Il-server)
@@ -27,7 +26,6 @@
     2. [NodeJS](#NodeJS)
     3. [Il database](#Il-database)
     4. [Grafana](#Grafana)
-        - [Query](#Query)
 5. [Conclusioni](#Conclusioni)
     1. [Problematiche](#Problematiche)
     2. [Sviluppi futuri](#Sviluppi-futuri)
@@ -81,7 +79,6 @@ Al fine di implementare tutte le funzionalità richieste, occorre aggiungere alc
 * cordova-plugin-background-mode -> permette l'esecuzione in background
 * cordova-plugin-advanced-http -> consente l'invio di POST request via HTTP
 
-#### Il motore
 
 Il cuore dell'applicazione è rappresentato principalmente da 3 file:
 * www/index.html -> l'interfaccia grafica
@@ -122,7 +119,7 @@ Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.x
 
 Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
 
-**Esempi dell'interfaccia:** all'interno della cartella *'imgExample'* vi sono due schermate dell'applicazione creata (<a href=https://github.com/albertomorini/Byce/blob/main/imgExample/app1.png>schermata1</a>, <a href=https://github.com/albertomorini/Byce/blob/main/imgExample/app2.png>schermata2</a>).
+> **Esempi dell'interfaccia:** all'interno della cartella *'imgExample'* vi sono due schermate dell'applicazione creata (<a href=https://github.com/albertomorini/Byce/blob/main/imgExample/app1.png>schermata1</a>, <a href=https://github.com/albertomorini/Byce/blob/main/imgExample/app2.png>schermata2</a>).
 
 ## Il pacchetto
 Il pacchetto inviato tramite il protocollo HTTP è codificato in JSON, per definire tale Content/Type si utilizza:
@@ -230,7 +227,8 @@ A configurazione terminata, si può creare una Dashboard dedicata dove si potrà
 ***Query & backup*** all'interno della folder *'server'* vi è il file di backup della dashboard Byce (è possibile visionare cone esattezza i widget creati importando il file di preferenze su Grafana).
 Inoltre è presente il file *queryGrafana.sql* contenente le query usate all'interno dei rispettivi pannelli.
 
-Nella seguente schermata è rappresentata la dashboard di Grafana, in questo caso il dispositivo 'S88plus' era collegato a una presa di corrente (pannello "charging"=1) mentre 'AlbyAndroid' era alimentato dalla sola batteria (attualmente al 37%).
+>Nella seguente schermata è rappresentata la dashboard di Grafana, in questo caso il dispositivo 'S88plus' era collegato a una presa di corrente (pannello "charging"=1) mentre 'AlbyAndroid' era alimentato dalla sola batteria (attualmente al 37%).
+
 ![GrafanaScreen](https://github.com/albertomorini/Byce/blob/main/imgExample/grafanaScreen.png)
 
 
