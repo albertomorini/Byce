@@ -4,8 +4,7 @@
 
 **Studente** Alberto Morini (mat. 141986)
 
-**Docente:** Professore Ivan Scagnetto
-
+**Docente:** Professore Ivan Scagnetto<br>
 **Anno accademico:** 2021/2022
 
 
@@ -34,7 +33,7 @@ Il progetto si suddivide in due parti: Byce e il server.
 
 Byce è un'app, progettata con l'obiettivo di rilevare il livello della batteria dei dispositivi Android e in seguito, inviare i dati al server.
 L'applicazione può essere estesa anche al sistema operativo iOS, poiché è stata sviluppata attraverso Apache Cordova, quindi non si tratta di un'app nativa bensì ibrida.
-Per l'esame è stata realizzata solamente la versione per Android.
+Attualmente è stata realizzata solamente la versione per Android.
 
 Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
