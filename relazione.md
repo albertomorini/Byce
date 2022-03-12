@@ -15,7 +15,7 @@
 
 ## Indice
 1. [Intro](#byce-a-battery-logger)
-    1. [L'idea](#L-idea)
+    1. [L'idea](#lidea)
 2. [L'app](#App-byce)
     1. [Architettura app](#Architettura-app)
     2. [Cordova Apache](#Cordova-Apache)
@@ -229,6 +229,7 @@ A configurazione terminata, si può creare una Dashboard dedicata dove si potrà
 ***Query & backup*** all'interno della folder *'server'* vi è il file di backup della dashboard Byce (è possibile visionare cone esattezza i widget creati importando il file di preferenze su Grafana).
 Inoltre è presente il file *queryGrafana.sql* contenente le query usate all'interno dei rispettivi pannelli.
 
+Nella seguente schermata è rappresentata la dashboard di Grafana, in questo caso il dispositivo 'S88plus' era collegato a una presa di corrente (pannello "charging"=1) mentre 'AlbyAndroid' era alimentato dalla sola batteria (attualmente al 37%).
 ![GrafanaScreen](https://github.com/albertomorini/Byce/blob/main/imgExample/grafanaScreen.png)
 
 
