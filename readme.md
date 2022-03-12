@@ -1,16 +1,10 @@
-# <p style="text-align:center">Byce </p>
-
-<div style="font-size: 17px">
-    <p style="font-size: 20px"> <b>Progetto di Internet Of Things </b></p>
-    <b>Studente: </b> Alberto Morini (mat. 141986)
-    <br>
-    <b>Docente: </b> Professore Ivan Scagnetto
-    <br>
-    <b>Anno accademico:</b> 2021/2022
-
-</div>
+# Byce
 
 
+##Progetto di Internet Of Things
+    **Studente** </b> Alberto Morini (mat. 141986)
+    **Docente:** Professore Ivan Scagnetto
+    **Anno accademico:** 2021/2022
 
 
 ## Indice
@@ -30,9 +24,6 @@
     1. [Problematiche](#Problematiche)
     2. [Sviluppi futuri](#Sviluppi-futuri)
     3. [Tecnologie utilizzate](#Tecnologie-utilizzate)
-
-
-
 
 
 
