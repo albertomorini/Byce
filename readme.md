@@ -2,8 +2,7 @@
 
 ## Progetto di Internet Of Things
 
-**Studente** Alberto Morini (mat. 141986)
-
+**Studente** Alberto Morini (mat. 141986)<br>
 **Docente:** Professore Ivan Scagnetto<br>
 **Anno accademico:** 2021/2022
 
@@ -32,14 +31,14 @@
 Il progetto si suddivide in due parti: Byce e il server.
 
 Byce è un'app, progettata con l'obiettivo di rilevare il livello della batteria dei dispositivi Android e in seguito, inviare i dati al server.
-L'applicazione può essere estesa anche al sistema operativo iOS, poiché è stata sviluppata attraverso Apache Cordova, quindi non si tratta di un'app nativa bensì ibrida.
+L'applicazione può essere estesa anche al sistema operativo iOS, poiché è stata sviluppata attraverso Apache Cordova, quindi non si tratta di un'app nativa bensì ibrida.<br>
 Attualmente è stata realizzata solamente la versione per Android.
 
 Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
 
 ### L'idea
-L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio, un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.
+L'idea è nata da una necessità: un ristorante che utilizza dei tablet come menù e per ordinare; alla fine del servizio, un cameriere deve controllare tutti i tablet per verificare quale di questi debba essere ricaricato.<br>
 Invece, con questa soluzione, il cameriere può in pochi secondi ottenere una panoramica dello stato di tutti i devices connessi alla rete.
 
 L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio telefono ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
@@ -51,21 +50,21 @@ L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere 
 
 L'applicazione deve ottenere il livello di carica e comunicare con il server.
 
-In seguito, è necessario che il dispositivo sia riconoscibile, in altre parole il server deve sapere chi ha mandato tali dati.
+In seguito, è necessario che il dispositivo sia riconoscibile, in altre parole il server deve sapere chi ha mandato tali dati.<br>
 Per tale obiettivo vi sono due soluzioni: utilizzare il MAC address oppure sfruttare il nome del dispositivo (eg. "Alby's iPhone"/"Samsung S5"/"Tablet21"). Quest'ultima idea è la soluzione ottimale, poiché poiché non necessita l'implementazione di un registro associativo tra MAC address e un'ulteriore nome; inoltre molti dispositivi (se si pensa a quelli personali) hanno già un nome personalizzato e quindi riconoscibile dall'utente.
 
-Il cambiamento dello stato di carica consiste nella variazione della percentuale o nella variazione dell'alimentazione da corrente (collegato/scollegato).
+Il cambiamento dello stato di carica consiste nella variazione della percentuale o nella variazione dell'alimentazione da corrente (collegato/scollegato).<br>
 Ad ogni cambiamento, l'applicazione scatena un evento il quale sarà ascoltato da un'apposita funzione che si occuperà quindi di rilevare i dati precedentemente elencati, calcolare un timestamp e in seguito inviare una POST request al server in ascolto.
 
 In fine, l'app deve essere in grado di continuare la sua esecuzione anche in background.
 
 
 ### Cordova Apache
-Cordova è un framework Javascript sviluppato da Nitobi (acquisita poi da Apache).
-Per eseguire Cordova è fondamentale l'installazione di NodeJS e NPM.
+Cordova è un framework Javascript sviluppato da Nitobi (acquisita poi da Apache).<br>
+Per eseguire Cordova è fondamentale l'installazione di NodeJS e NPM.<br>
 Quindi `$ sudo npm install -g cordova` (viene utilizzato il comando "sudo" poiché alcuni sistemi richiedono i requisiti di amministratore).
 
-Al fine di implementare tutte le funzionalità richieste, occorre aggiungere alcuni plugin:
+Al fine di implementare tutte le funzionalità richieste, occorre aggiungere alcuni plugin (`$ cordova plugin add ...`):
 * cordova-plugin-battery-status -> si interfaccia con la batteria del device
 * cordova-plugin-device-name -> ottiene il nome del dispositivo
 * cordova-plugin-background-mode -> permette l'esecuzione in background
@@ -106,7 +105,7 @@ in seguito, si deve ricaricare tale file attraverso `$ source .bashrc`
 
 Per costruire l'APK occorre aggiungere la piattaforma Android al progetto `$ cordova platform add android` e poi `$ cordova build` si occuperà di realizzare il pacchetto di installazione per ogni piattaforma aggiunta.
 
-Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.xml dove si dichiara il comportamento e i permessi richiesti dall'app.
+Inoltre, c'è il bisogno di apportare alcune modifiche al file AndroidManifest.xml, dove si dichiara il comportamento e i permessi richiesti dall'app.
 > E' stato incluso il file generato alla creazione dell'APK utilizzata, solitamente il file si colloca in *"byce/platforms/android/app/src/"* dopo l'aggiunta della piattaforma
 
 Una volta importata l'APK nel dispositivo Android, è richiesto di abilitare il permesso di installare applicazioni da fonti sconosciute, poiché l'APK non è firmata.
