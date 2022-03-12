@@ -10,8 +10,8 @@
 
 
 ## Indice
-1. [Intro] (##Byce, a battery logger)
-    1. [Study case] (#Study-case)
+1. [Intro](##Byce, a battery logger)
+    1. [Study case](#Study-case)
 
 ## Byce, a battery logger
 Il progetto si suddivide in due parti: Byce e il server.
