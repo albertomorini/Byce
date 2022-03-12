@@ -1,7 +1,7 @@
-# <p style="text-align:center">Byce </p>
+<p style="text-align:center"> Byce </p>
 
 <div style="font-size: 17px">
-    <p style="font-size: 20px"> Progetto di Internet Of Things </p>
+    <p style="font-size: 20px"> <b>Progetto di Internet Of Things </b></p>
     <b>Studente: </b> Alberto Morini (mat. 141986)
     <br>
     <b>Docente: </b> Professore Ivan Scagnetto
