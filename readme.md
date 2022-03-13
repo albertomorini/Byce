@@ -10,7 +10,7 @@
 ## Indice
 1. [Intro](#byce-a-battery-logger)
     1. [L'idea](#lidea)
-2. [L'app](#App-byce)
+2. [L'app](#App-Byce)
     1. [Architettura app](#Architettura-app)
     2. [Cordova Apache](#Cordova-Apache)
     3. [Android](#Android)
@@ -30,11 +30,11 @@
 ## Byce, a battery logger
 Il progetto si suddivide in due parti: Byce e il server.
 
-Byce è un'app, progettata con l'obiettivo di rilevare il livello della batteria dei dispositivi Android e in seguito, inviare i dati al server.
+Byce è un'app, progettata con l'obiettivo di rilevare il livello della batteria dei dispositivi Android e in seguito, inviare i dati al server.<br>
 L'applicazione può essere estesa anche al sistema operativo iOS, poiché è stata sviluppata attraverso Apache Cordova, quindi non si tratta di un'app nativa bensì ibrida.<br>
 Attualmente è stata realizzata solamente la versione per Android.
 
-Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.
+Il server è rappresentato da qualsiasi personal computer in grado di eseguire il linguaggio NodeJS e ospitare un database MySQL.<br>
 L'obiettivo è quindi quello di rimanere in ascolto delle informazioni ricevute dai vari telefoni/tablet, memorizzare i dati nella base di dati e poi rappresentarli attraverso il software Grafana.
 
 ### L'idea
@@ -44,14 +44,14 @@ Invece, con questa soluzione, il cameriere può in pochi secondi ottenere una pa
 L'applicativo si può utilizzare anche per scopi personali, ad esempio ricevere una notifica quando il proprio telefono ha raggiunto la carica completa oppure se è sia stato scollegato dalla presa di corrente.
 
 
-## App byce
+## App Byce
 
 ### Architettura app
 
 L'applicazione deve ottenere il livello di carica e comunicare con il server.
 
-In seguito, è necessario che il dispositivo sia riconoscibile, in altre parole il server deve sapere chi ha mandato tali dati.<br>
-Per tale obiettivo vi sono due soluzioni: utilizzare il MAC address oppure sfruttare il nome del dispositivo (eg. "Alby's iPhone"/"Samsung S5"/"Tablet21"). Quest'ultima idea è la soluzione ottimale, poiché poiché non necessita l'implementazione di un registro associativo tra MAC address e un'ulteriore nome; inoltre molti dispositivi (se si pensa a quelli personali) hanno già un nome personalizzato e quindi riconoscibile dall'utente.
+In seguito, è necessario che il dispositivo sia riconoscibile, in altre parole il server deve sapere chi è il mittente del messaggio.<br>
+Per tale obiettivo vi sono due soluzioni: utilizzare il MAC address oppure sfruttare il nome del dispositivo (eg. "Alby's iPhone"/"Samsung S5"/"Tablet21"). Quest'ultima idea è la soluzione ottimale, poiché poiché non necessita l'implementazione di un registro associativo tra MAC address e un ulteriore nome; inoltre molti dispositivi (se si pensa a quelli personali) hanno già un nome personalizzato e quindi riconoscibile dall'utente.
 
 Il cambiamento dello stato di carica consiste nella variazione della percentuale o nella variazione dell'alimentazione da corrente (collegato/scollegato).<br>
 Ad ogni cambiamento, l'applicazione scatena un evento il quale sarà ascoltato da un'apposita funzione che si occuperà quindi di rilevare i dati precedentemente elencati, calcolare un timestamp e in seguito inviare una POST request al server in ascolto.
@@ -204,7 +204,7 @@ con.connect(function(err) {
 Grafana è un software che consente di estrapolare informazioni da un database e rappresentarle attraverso grafici interattivi e vari indicatori.
 
 L'installazione (sistemi Debian) avviene eseguendo i seguenti comandi nel terminale:
-```sh
+```shell
 sudo apt-get install -y adduser libfontconfig1
 wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.4.3_amd64.deb
 sudo dpkg -i grafana-enterprise_8.4.3_amd64.deb
@@ -229,7 +229,7 @@ Inoltre è presente il file *"queryGrafana.sql"* contenente le query usate all'i
 ### Problematiche
 
 Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background dopo circa 5 minuti.<br>
-Per ovviare questo probelma è stata implementata una scappatoia, costituita dal portare il processo in "foreground" e nuovamente in "background".<br>
+Per ovviare questo probelma è stata implementata una scappatoia costituita dal portare il processo in "foreground" e nuovamente in "background".<br>
 Purtroppo questa soluzione vede il display del dispositivo accendersi (poiché si porta in primo piano l'app) ogni 5 minuti.
 
 
