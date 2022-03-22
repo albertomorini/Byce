@@ -1,6 +1,28 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
+
+
+function askPSW(){
+    document.getElementById("pswInput").innerHTML='<input type="password" name="psw" id="psw"><input type="submit" onclick="verifica()">'
+
+}
+
+function verifica(){
+    psw = document.getElementById("psw").value;
+    //md5 con psw, javascript fai ispeziona e vedi il "ciao"
+    if(psw=="ciao"){
+        //store psw
+        document.getElementById("pswInput").innerHTML='<h1>Okay!</h1>'
+    }else{
+        document.getElementById("pswInput").innerHTML='<h2>Password sbagliata</h2><br><input type="password" name="psw" id="psw"><input type="submit" onclick="verifica()">'
+    }
+}
+
+
+
+
 function onDeviceReady() {
+    askPSW()
     console = document.getElementById("console"); //div to add info via UI
     cordova.plugins.backgroundMode.enable();
     cordova.plugins.backgroundMode.disableWebViewOptimizations();
@@ -15,9 +37,16 @@ function onDeviceReady() {
             console.innerHTML += "<hr/>";
             let d = new Date();
 
+
+            cordova.plugin.http.setServerTrustMode('nocheck', function() {
+              console.innerHTML += 'success!';
+            }, function() {
+              console.innerHTML += 'error :(';
+            });
+
             cordova.plugin.http.setDataSerializer('json'); //important: default is string, this set content/type=json
             //send info to server via post, my server has a static IP: 10.0.0.3, and the service is active on port 8124
-            cordova.plugin.http.post('http://10.0.0.3:8124', {
+            cordova.plugin.http.post('https://10.0.0.3:8124', {
                 "batteryLevel": `${status.level}`,
                 "inCharge": `${status.isPlugged}`,
                 "name": cordova.plugins.deviceName.name,

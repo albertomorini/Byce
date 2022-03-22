@@ -1,28 +1,22 @@
-var https = require('https'); //module for the creation of the server
+var http = require('http'); //module for the creation of the server
 var fs = require("fs"); //store a CSV with the messages recived, useful for debug
 var mysql = require('mysql'); //module to connect with MySQL
 
-var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-}
-
 
 //CREATE THE SERVER
-https.createServer(options,function (req, res) {
+http.createServer(function (req, res) {
+  var body = "";
+  req.on('data', function (chunk) {
+    body += chunk;
+  });
 
-    var body = "";
-        req.on('data', function (chunk) {
-        body += chunk;
-    });
+  req.on('end', function () {
+    //body is the JSON sent by the app
+    storeToFile(body)
+    storeToDB(body)
 
-    req.on('end', function () {
-        //body is the JSON sent by the app
-        storeToFile(body)
-        storeToDB(body)
-        //we don't need to respond to the client
-    });
-
+    //we don't need to respond to the client
+  });
 }).listen(8124);
 
 
