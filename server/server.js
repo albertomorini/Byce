@@ -1,7 +1,7 @@
 var https = require('https'); //module for the creation of the server
 var fs = require("fs"); //store a CSV with the messages recived, useful for debug
 var mysql = require('mysql'); //module to connect with MySQL
-var crypto = require('crypto');
+var crypto = require('crypto'); //module to get MD5 of password
 
 var options = {
     key: fs.readFileSync('key.pem'),
@@ -10,31 +10,32 @@ var options = {
 
 /**
  * check if the password provided is correct
- * //TODO: make the md5 of it
+ * retrive the MD5 of the password stored into file
  * @param  {[String]} password   the password provided by the client
- * @return {[boolean]} true if is correct
+ * @return {[Promise]} return a Promise with the result of the password (true or false)
  */
 function checkPsw(password){
-    //TODO: FIX THE RETURN
+
+    //create the MD5 of the password provided by the client
     let hash = crypto.createHash('md5').update(password).digest('hex');
-    var bfr= false
-    fs.readFile('pswMD5.txt', function(err,data){
-        if (err) {
-            console.log("Error reading file: "+err);
-        }else{
-            if(hash.trim()==data.toString().trim()){
-                console.log("password corretta");
-                bfr= true;
+
+    return new Promise((resolve,reject)=>{
+        fs.readFile('pswMD5.txt', function(err,data){
+            if (err) {
+                reject(err)
             }else{
-                console.log("password sbagliata");
-                bfr= false;
+                if(hash.trim()==data.toString()){
+                    console.log("--->password corretta");
+                    resolve(true)
+                }else{
+                    console.log("--->password sbagliata");
+                    resolve(false)
+                }
             }
-        }
+        });
     });
-
-    return bfr;
-
 }
+
 
 //AUTH SERVER-> check if password is correct and replay to client true (or false) as string
 https.createServer(options,function(req,res){
@@ -43,13 +44,16 @@ https.createServer(options,function(req,res){
         body += chunk;
     });
 
-    req.on('end', function () {
-
-        console.log("CHECK: ");
+    req.on('end', () => {
+        console.log("AUTH: ");
         //convert the message into a JSON
         jsonPack = JSON.parse(body)
-        res.write(checkPsw(jsonPack.password).toString()); //respond true or false
-        res.end()
+        checkPsw(jsonPack.password).then(resPsw=>{
+            res.write(resPsw.toString())
+            res.end()
+        }).catch(err=>{
+            console.log("Error reading password's file");
+        });
     });
 }).listen(8127);
 
@@ -62,17 +66,19 @@ https.createServer(options,function (req, res) {
         body += chunk;
     });
 
-    req.on('end', function () {
-
+    req.on('end', () => {
         console.log("DATA:");
-
         //convert the message into a JSON
         jsonPack = JSON.parse (body)
-        if(checkPsw(jsonPack.password)){
-            storeToFile(jsonPack)
-            storeToDB(jsonPack)
-        }
-        //we don't need to respond to the client here
+        checkPsw(jsonPack.password).then(resPsw=>{
+            if(resPsw){
+                storeToFile(jsonPack)
+                storeToDB(jsonPack)
+            }
+        }).catch(err=>{
+            console.log("Error reading password's file");
+        });
+        //we don't have to respond to the client here
     });
 
 }).listen(8124);
@@ -104,7 +110,6 @@ function storeToDB(jsonPack) {
       password: "Fixed23!!",
       database: "byce"
     });
-
 
     //check the connection
     con.connect(function(err) {
