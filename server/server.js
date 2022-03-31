@@ -1,35 +1,35 @@
 var https = require('https'); //module for the creation of the server
-var fs = require("fs"); //store a CSV with the messages recived, useful for debug
+var fs = require("fs"); //store a CSV with the messages received, useful for debug
 var mysql = require('mysql'); //module to connect with MySQL
-var crypto = require('crypto'); //module to get MD5 of password
+var crypto = require('crypto'); //module to get MD5's hash of password sent by client
 
+//Loading of the self-signed certified in way to create HTTPS server.
 var options = {
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
 }
 
 /**
- * check if the password provided is correct
- * retrive the MD5 of the password stored into file
- * @param  {[String]} password   the password provided by the client
+ * Check if the hash of password provided by client is the same of the one stored into './pswMD5.txt'
+ * @param  {[String]} password the password provided by the client
  * @return {[Promise]} return a Promise with the result of the password (true or false)
  */
 function checkPsw(password){
 
-    //create the MD5 of the password provided by the client
+    //hash the password provided
     let hash = crypto.createHash('md5').update(password).digest('hex');
 
     return new Promise((resolve,reject)=>{
         fs.readFile('pswMD5.txt', function(err,data){
             if (err) {
-                reject(err)
+                reject(err);
             }else{
-                if(hash.trim()==data.toString()){
+                if(hash==data.toString()){
                     console.log("--->password corretta");
-                    resolve(true)
+                    resolve(true);
                 }else{
                     console.log("--->password sbagliata");
-                    resolve(false)
+                    resolve(false);
                 }
             }
         });
@@ -37,7 +37,7 @@ function checkPsw(password){
 }
 
 
-//AUTH SERVER-> check if password is correct and replay to client true (or false) as string
+//(AUTH SERVER)@8127 -> check if password is correct and respond to client (true or false)
 https.createServer(options,function(req,res){
     var body = "";
         req.on('data', function (chunk) {
@@ -47,10 +47,10 @@ https.createServer(options,function(req,res){
     req.on('end', () => {
         console.log("AUTH: ");
         //convert the message into a JSON
-        jsonPack = JSON.parse(body)
+        jsonPack = JSON.parse(body);
         checkPsw(jsonPack.password).then(resPsw=>{
-            res.write(resPsw.toString())
-            res.end()
+            res.write(resPsw.toString()); //we can't send boolean, need to cast it into string
+            res.end();
         }).catch(err=>{
             console.log("Error reading password's file");
         });
@@ -58,7 +58,11 @@ https.createServer(options,function(req,res){
 }).listen(8127);
 
 
-//STORING SERVER -> get the data (check the password) and store the data into CSV/DB
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
+//(STORING SERVER)@8124 -> get the data (check the password) and store the data into CSV/DB
 https.createServer(options,function (req, res) {
 
     var body = "";
@@ -72,20 +76,21 @@ https.createServer(options,function (req, res) {
         jsonPack = JSON.parse (body)
         checkPsw(jsonPack.password).then(resPsw=>{
             if(resPsw){
-                storeToFile(jsonPack)
-                storeToDB(jsonPack)
+                storeToFile(jsonPack);
+                storeToDB(jsonPack);
             }
         }).catch(err=>{
             console.log("Error reading password's file");
         });
+
         //we don't have to respond to the client here
     });
 
 }).listen(8124);
 
 /**
- * STORE THE MESSAGE RECIVED TO A CSV FILE
- * @param  {[JSON]} jsonPack              the json of the message recived
+ * Store data received into a CSV file
+ * @param  {[JSON]} jsonPack the json of the message
  */
 function storeToFile(jsonPack) {
     let strTmp = jsonPack.batteryLevel+","+jsonPack.inCharge+","+jsonPack.name+","+jsonPack.date+","+jsonPack.time+"\n";
@@ -98,8 +103,8 @@ function storeToFile(jsonPack) {
 }
 
 /**
- * STORE THE MESSAGE RECIVED IN THE MYSQL DATABASE (create connection, and make a insert query)
- * @param  {[JSON]} jsonPack              the json of the message recived
+ * Store data into a MySQL database (create connection, and make a insert query)
+ * @param  {[JSON]} jsonPack  the json of the message
  */
 function storeToDB(jsonPack) {
 

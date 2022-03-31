@@ -1,32 +1,34 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
-var appAuthenticated = false; //flag controller if password is correct
-var storedPassword = "" //the correct password, we need to include it in every message
+var appAuthenticated = false; //a flag that allows to send data if the password is correct
+var storedPassword = "" //the correct password, we need to include it in every message so we store into a variable
 
 
 /**
- * ask the server if the password is correct, the server  will return string "true" or "false"
- * WILL CHANGE THE VALUE OF 'appAuthenticated'
+ * ask the server if the password is correct, the server  will return a string "true" or "false"
  * @param  {String} [IPAddress='10.0.0.3']     Server's IP address
  * @param  {String} [port='8127']             Server's port
  */
 function checkPsw(IPAddress='10.0.0.3', port='8127'){
-    let psw = document.getElementById("pswInput").value;
+    let psw = document.getElementById("pswInput").value; //get the psw provided
     if(psw!=""){
+
+        //the server's certified is self-signed, so we have to trust without checking with CA
         cordova.plugin.http.setServerTrustMode('nocheck', function() {
           console.log("success, no check");
         }, function() {
           console.log("Error server trust mode");
         });
 
-        cordova.plugin.http.setDataSerializer('json'); //important: default is string, this set content/type=json
-        //send info to server via post, my server has a static IP: 10.0.0.3, and the service is active on port 8124
+        cordova.plugin.http.setDataSerializer('json'); //set the content-type as json
+
+        //send the password
         cordova.plugin.http.post('https://'+IPAddress+':'+port,{
             "password":psw
         }, {
           Authorization: 'OAuth2: token'
         }, function(response) {
-            if(response.data=="true"){
+            if(response.data=="true"){ //psw provided is correct
                 document.getElementById("pswField").innerHTML='<h3>Password corretta</h3>'
                 appAuthenticated=true;
                 storedPassword = psw //save the correct password
@@ -34,20 +36,23 @@ function checkPsw(IPAddress='10.0.0.3', port='8127'){
                 document.getElementById("pswField").innerHTML='<h3>Password sbagliata</h3><input type="password" name="pswInput" id="pswInput"><input type="submit" onclick="checkPsw()">'
             }
         }, function(response) {
+            //error in the response
             //document.getElementById("pswField").innerHTML=response.error;
             console.log(response.error);
         });
     }
 }
 
+
 /**
- * Send the HTTPS request
+ * Send the battery info to server
  * @param  {dict/json} jsonInfo    the info we want to send
  * @param  {String} [IPAddress='10.0.0.3']    Server's IP address
  * @param  {String} [port='8124']      Server's port
  */
 function sendData(jsonInfo, IPAddress='10.0.0.3', port='8124'){
 
+    //the server's certified is self-signed, so we have to trust without checking with CA
     cordova.plugin.http.setServerTrustMode('nocheck', function() {
       console.log("success, no check");
     }, function() {
