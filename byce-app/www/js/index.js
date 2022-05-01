@@ -82,11 +82,12 @@ function onDeviceReady() {
 
     //when the user get off the app (eg click home button), this method starts
     cordova.plugins.backgroundMode.on('enable', ()=>{
-
+        myConsole.innerHTML +=  `your UUID is: <b>${device.uuid}</b>`
         function logStatusObject(status){
 
             myConsole.innerHTML += `<p>level: ${status.level} || charging: ${status.isPlugged}</p>`;
             myConsole.innerHTML += '<hr>'
+
             let d = new Date();
 
             if(appAuthenticated){
@@ -94,6 +95,7 @@ function onDeviceReady() {
                     "password": storedPassword,
                     "batteryLevel": `${status.level}`,
                     "inCharge": `${status.isPlugged}`,
+                    "serial": `${device.uuid}`,
                     "name": cordova.plugins.deviceName.name,
                     "date": d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(), //getMonth+1, because it's start from 0
                     "time": d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()

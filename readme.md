@@ -162,7 +162,7 @@ Il database è stato costruito tramite MySQL di Oracle.
 
 Per l'installazione si esegue a terminale `$ sudo apt install mysql-server`
 
-Successivamente si effettua il login `$ mysql -h localhost -P 3306 -u root -p` e si cambia la password default dell'utente root (è possibile anche aggiungere un nuovo user nel caso lo si desideri)
+Successivamente si effettua il login `$ sudo mysql -u root ` e si cambia la password default dell'utente root (è possibile anche aggiungere un nuovo user nel caso lo si desideri)
 ```sql
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourPsw'
 ```
