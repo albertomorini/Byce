@@ -22,9 +22,13 @@ function checkPsw(IPAddress='10.0.0.3', port='8127'){
 
         cordova.plugin.http.setDataSerializer('json'); //set the content-type as json
 
-        //send the password
+        //send the password and the info of the device (name, model etc)
         cordova.plugin.http.post('https://'+IPAddress+':'+port,{
-            "password":psw
+            "password":psw,
+            "UID": `${device.uuid}`,
+            "NAME_DEVICE": cordova.plugins.deviceName.name,
+            "MODEL": `${device.model}`,
+            "OS_VERSION": `${device.version}`
         }, {
           Authorization: 'OAuth2: token'
         }, function(response) {
@@ -82,7 +86,7 @@ function onDeviceReady() {
 
     //when the user get off the app (eg click home button), this method starts
     cordova.plugins.backgroundMode.on('enable', ()=>{
-        myConsole.innerHTML +=  `your UUID is: <b>${device.uuid}</b>`
+        myConsole.innerHTML +=  `Yours UUID is: <b>${device.uuid}</b>`
         function logStatusObject(status){
 
             myConsole.innerHTML += `<p>level: ${status.level} || charging: ${status.isPlugged}</p>`;
@@ -93,18 +97,16 @@ function onDeviceReady() {
             if(appAuthenticated){
                 let tmpJson = {
                     "password": storedPassword,
-                    "batteryLevel": `${status.level}`,
-                    "inCharge": `${status.isPlugged}`,
-                    "serial": `${device.uuid}`,
-                    "name": cordova.plugins.deviceName.name,
-                    "date": d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(), //getMonth+1, because it's start from 0
-                    "time": d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
+                    "UID": `${device.uuid}`,
+                    "LOG_DATE": d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(), //getMonth+1, because it's start from 0
+                    "LOG_TIME": d.getHours()+":"+d.getMinutes()+":"+d.getSeconds(),
+                    "BAT_LEVEL": `${status.level}`,
+                    "INCHARGE": `${status.isPlugged}`,
                 };
                 sendData(tmpJson);
             }
         }
         window.addEventListener("batterystatus", logStatusObject, false);
-
 
         //In Android 9+, when an app is on background for more than 5min the OS kills it, so we need to take back to foreground (and next return to background)
         setInterval(()=>{

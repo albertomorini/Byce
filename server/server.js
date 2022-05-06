@@ -25,10 +25,10 @@ function checkPsw(password){
                 reject(err);
             }else{
                 if(hash==data.toString()){
-                    console.log("--->password corretta");
                     resolve(true);
+                    console.log("\t [correct password]");
                 }else{
-                    console.log("--->password sbagliata");
+                    console.log("\t [wrong password]");
                     resolve(false);
                 }
             }
@@ -47,8 +47,9 @@ https.createServer(options,function(req,res){
     req.on('end', () => {
         console.log("AUTH: ");
         //convert the message into a JSON
-        jsonPack = JSON.parse(body);
-        checkPsw(jsonPack.password).then(resPsw=>{
+        dataPack = JSON.parse(body);
+        checkPsw(dataPack.password).then(resPsw=>{
+            registerDevice(dataPack);
             res.write(resPsw.toString()); //we can't send boolean, need to cast it into string
             res.end();
         }).catch(err=>{
@@ -73,11 +74,11 @@ https.createServer(options,function (req, res) {
     req.on('end', () => {
         console.log("DATA:");
         //convert the message into a JSON
-        jsonPack = JSON.parse (body)
-        checkPsw(jsonPack.password).then(resPsw=>{
+        dataPack = JSON.parse (body)
+        checkPsw(dataPack.password).then(resPsw=>{
             if(resPsw){
-                storeToFile(jsonPack);
-                storeToDB(jsonPack);
+                storeDataToFile(dataPack);
+                storeDataToDB(dataPack);
             }
         }).catch(err=>{
             console.log("Error reading password's file");
@@ -90,10 +91,10 @@ https.createServer(options,function (req, res) {
 
 /**
  * Store data received into a CSV file
- * @param  {[JSON]} jsonPack the json of the message
+ * @param  {[JSON]} dataPack the json of the message
  */
-function storeToFile(jsonPack) {
-    let strTmp = jsonPack.batteryLevel+","+jsonPack.inCharge+","+jsonPack.name+","+jsonPack.date+","+jsonPack.time+"\n";
+function storeDataToFile(dataPack) {
+    let strTmp = dataPack.batteryLevel+","+dataPack.inCharge+","+dataPack.name+","+dataPack.date+","+dataPack.time+"\n";
 
     fs.appendFile('dataset.csv',strTmp,function(err){
         if(err){
@@ -102,31 +103,67 @@ function storeToFile(jsonPack) {
     });
 }
 
+
 /**
  * Store data into a MySQL database (create connection, and make a insert query)
- * @param  {[JSON]} jsonPack  the json of the message
+ * @param  {[JSON]} dataPack  the json of the message
  */
-function storeToDB(jsonPack) {
+function storeDataToDB(dataPack){
 
     //create the connection
     var con = mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "Fixed23!!",
-      database: "byce"
+      password: "Fixed23",
+      database: "BYCE"
     });
 
     //check the connection
     con.connect(function(err) {
       if (err) throw err;
 
-      //connected, so make the query
-      var sql = "INSERT INTO Dataset (battery, incharge, name, data, tempo) VALUES (" + jsonPack.batteryLevel+","+jsonPack.inCharge+",'"+jsonPack.name+"','"+jsonPack.date+"','"+jsonPack.time+"');";
+      //connected, make the query
+      var sql = "INSERT INTO DATALOG(UID,LOG_DATE,LOG_TIME,BAT_LEVEL,INCHARGE) VALUES ('" + dataPack.UID+"','"+dataPack.LOG_DATE+"','"+dataPack.LOG_TIME+"',"+dataPack.BAT_LEVEL+","+dataPack.INCHARGE+");";
 
       //execute the query
       con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("SUCCESS: info stored to db");
+        if (!err){
+            console.log("SUCCESS: info stored to db");
+        }else{
+            console.log(err);
+        };
+      });
+    });
+}
+
+/**
+ * Register new device into a MySQL database (create connection, and make a insert query)
+ * If the device already exists will be ignored the error (of duplicate key) message.
+ * TODO: stored procedure
+ * @param  {[JSON]} dataPack  the json of the message
+ */
+function registerDevice(dataPack){
+
+    //create the connection
+    var con = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "Fixed23",
+      database: "BYCE"
+    });
+
+    //check the connection
+    con.connect(function(err) {
+      if (err) throw err;
+
+      //connected, make the query
+      var sql = "INSERT INTO DEVICES(UID,NAME_DEVICE,MODEL,OS_VERSION) VALUES ('" + dataPack.UID+"','"+dataPack.NAME_DEVICE+"','"+dataPack.MODEL+"','"+dataPack.OS_VERSION+"');";
+
+      //execute the query
+      con.query(sql, function (err, result) {
+        if (!err){
+            console.log("New device stored.");
+        }
       });
     });
 }
