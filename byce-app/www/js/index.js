@@ -68,7 +68,7 @@ function sendData(jsonInfo, IPAddress='10.0.0.3', port='8124'){
     cordova.plugin.http.post('https://'+IPAddress+':'+port,jsonInfo, {
       Authorization: 'OAuth2: token'
     }, function(response) {
-      console.log(response.status);
+        console.log(response.status);
     }, function(response) {
         console.log(response.error);
     });

@@ -15,7 +15,6 @@ var options = {
  * @return {[Promise]} return a Promise with the result of the password (true or false)
  */
 function checkPsw(password){
-
     //hash the password provided
     let hash = crypto.createHash('md5').update(password).digest('hex');
 
@@ -40,7 +39,7 @@ function checkPsw(password){
 //(AUTH SERVER)@8127 -> check if password is correct and respond to client (true or false)
 https.createServer(options,function(req,res){
     var body = "";
-        req.on('data', function (chunk) {
+    req.on('data', function (chunk) {
         body += chunk;
     });
 
@@ -49,7 +48,9 @@ https.createServer(options,function(req,res){
         //convert the message into a JSON
         dataPack = JSON.parse(body);
         checkPsw(dataPack.password).then(resPsw=>{
-            registerDevice(dataPack);
+            if(resPsw){ //we only register the devices with the right psw
+                registerDevice(dataPack);
+            }
             res.write(resPsw.toString()); //we can't send boolean, need to cast it into string
             res.end();
         }).catch(err=>{
@@ -90,12 +91,11 @@ https.createServer(options,function (req, res) {
 }).listen(8124);
 
 /**
- * Store data received into a CSV file
+ * Store data received into a CSV file (we don't have the devices info here)
  * @param  {[JSON]} dataPack the json of the message
  */
 function storeDataToFile(dataPack) {
-    let strTmp = dataPack.batteryLevel+","+dataPack.inCharge+","+dataPack.name+","+dataPack.date+","+dataPack.time+"\n";
-
+    let strTmp = dataPack.UID+","+dataPack.LOG_DATE+","+dataPack.LOG_TIME+","+dataPack.BAT_LEVEL+","+dataPack.INCHARGE+"\n";
     fs.appendFile('dataset.csv',strTmp,function(err){
         if(err){
             console.error(err);
@@ -160,10 +160,10 @@ function registerDevice(dataPack){
       var sql = "INSERT INTO DEVICES(UID,NAME_DEVICE,MODEL,OS_VERSION) VALUES ('" + dataPack.UID+"','"+dataPack.NAME_DEVICE+"','"+dataPack.MODEL+"','"+dataPack.OS_VERSION+"');";
 
       //execute the query
-      con.query(sql, function (err, result) {
-        if (!err){
-            console.log("New device stored.");
-        }
-      });
+        con.query(sql, function (err, result) {
+            if (!err){
+                console.log("New device stored.");
+            }
+        });
     });
 }
