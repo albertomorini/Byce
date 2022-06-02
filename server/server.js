@@ -153,7 +153,7 @@ function storeDataToDB(dataPack){
       if (err) throw err;
 
       //connected, make the query
-      var sql = "INSERT INTO DATALOG(UID,LOG_DATE,LOG_TIME,BAT_LEVEL,INCHARGE) VALUES ('" + dataPack.UID+"','"+dataPack.LOG_DATE+"','"+dataPack.LOG_TIME+"',"+dataPack.BAT_LEVEL+","+dataPack.INCHARGE+");";
+      var sql = "INSERT INTO DATALOG(UID,LOG_DATE,LOG_TIME,BAT_LEVEL,IN_CHARGE) VALUES ('" + dataPack.UID+"','"+dataPack.LOG_DATE+"','"+dataPack.LOG_TIME+"',"+dataPack.BAT_LEVEL+","+dataPack.INCHARGE+");";
 
       //execute the query
       con.query(sql, function (err, result) {

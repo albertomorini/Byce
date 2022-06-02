@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -26,6 +29,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ArKn39l7z"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -61,6 +68,8 @@
       "id": 2,
       "options": {
         "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -71,12 +80,12 @@
         },
         "showUnfilled": true
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "MSndVBlnk"
+            "uid": "ArKn39l7z"
           },
           "format": "table",
           "group": [],
@@ -109,6 +118,10 @@
       "type": "bargauge"
     },
     {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ArKn39l7z"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -150,24 +163,24 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^INCHARGE$/",
+          "fields": "/^IN_CHARGE$/",
           "values": true
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "MSndVBlnk"
+            "uid": "ArKn39l7z"
           },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "\nSELECT DL1.INCHARGE, DL1.LOG_TIME, D.NAME_DEVICE FROM DATALOG DL1\nINNER JOIN DEVICES D ON DL1.UID=D.UID\nWHERE DL1.LOG_DATE=CURRENT_DATE AND\nNOT EXISTS(SELECT * FROM DATALOG DL2 WHERE\nDL1.LOG_TIME<DL2.LOG_TIME AND\nDL1.UID=DL2.UID AND\nDL1.LOG_DATE=DL2.LOG_DATE);\n",
+          "rawSql": "\nSELECT DL1.IN_CHARGE, DL1.LOG_TIME, D.NAME_DEVICE FROM DATALOG DL1\nINNER JOIN DEVICES D ON DL1.UID=D.UID\nWHERE DL1.LOG_DATE=CURRENT_DATE AND\nNOT EXISTS(SELECT * FROM DATALOG DL2 WHERE\nDL1.LOG_TIME<DL2.LOG_TIME AND\nDL1.UID=DL2.UID AND\nDL1.LOG_DATE=DL2.LOG_DATE);\n",
           "refId": "A",
           "select": [
             [
@@ -194,6 +207,10 @@
       "type": "gauge"
     },
     {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ArKn39l7z"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -269,7 +286,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "MSndVBlnk"
+            "uid": "ArKn39l7z"
           },
           "format": "time_series",
           "group": [],
@@ -313,6 +330,10 @@
         "mode": "opacity"
       },
       "dataFormat": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "ArKn39l7z"
+      },
       "description": "",
       "gridPos": {
         "h": 8,
@@ -333,7 +354,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "MSndVBlnk"
+            "uid": "ArKn39l7z"
           },
           "format": "time_series",
           "group": [],
@@ -374,11 +395,17 @@
       "yAxis": {
         "format": "percent",
         "logBase": 1,
+        "max": "100",
+        "min": "0",
         "show": true
       },
       "yBucketBound": "auto"
     },
     {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ArKn39l7z"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -386,7 +413,8 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -418,12 +446,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "MSndVBlnk"
+            "uid": "ArKn39l7z"
           },
           "format": "table",
           "group": [],
@@ -456,20 +484,20 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "2022-05-08T21:04:13.669Z",
-    "to": "2022-05-08T21:39:02.400Z"
+    "from": "2022-06-02T17:12:57.000Z",
+    "to": "2022-06-02T17:32:38.000Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "BYCE-Dashboard",
   "uid": "a28pVBl7k",
-  "version": 16,
+  "version": 4,
   "weekStart": "monday"
 }
