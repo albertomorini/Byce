@@ -1,0 +1,665 @@
+%% Le lingue utilizzate, che verranno passate come opzioni al pacchetto babel. Come sempre, l'ultima indicata sar� quella primaria.
+%% Se si utilizzano una o pi� lingue diverse da "italian" o "english", leggere le istruzioni in fondo.
+\def\thudbabelopt{italian}
+%% Valori ammessi per target: bach (tesi triennale), mst (tesi magistrale), phd (tesi di dottorato).
+\documentclass[target=bach]{thud}
+
+
+\course{Internet of Things, Big Data e Web}
+\title{Monitoraggio della batteria di dispositivi Android con IoT}
+\author{Alberto Morini}
+\supervisor{Prof.\ Ivan Scagnetto}
+\date{2021/2022}
+
+%% Campi obbligatori: \title, \author e \course.
+%% Altri campi disponibili: \reviewer, \tutor, \chair, \date (anno accademico, calcolato in automatico), \rights
+%% Con \supervisor, \cosupervisor, \reviewer e \tutor si possono indicare pi� nomi separati da \and.
+%% Per le sole tesi di dottorato:
+
+\contacts{Via San Fermo, 8\\31029 Vittorio Veneto --- Italia\\+39 3456945815\\\texttt{https://github.com/albertomorini}\\\texttt{99morini@gmail.com}}
+
+%% --- Pacchetti consigliati ---
+%% pdfx: per generare il PDF/A per l'archiviazione. Necessario solo per la versione finale
+\usepackage[a-1b]{pdfx}
+%% hyperref: Regola le impostazioni della creazione del PDF... pi� tante altre cose. Ricordarsi di usare l'opzione pdfa.
+\usepackage[pdfa]{hyperref}
+%% tocbibind: Inserisce nell'indice anche la lista delle figure, la bibliografia, ecc.
+
+%% --- Stili di pagina disponibili (comando \pagestyle) ---
+%% sfbig (predefinito): Apertura delle parti e dei capitoli col numero grande; titoli delle parti e dei capitoli e intestazioni di pagina in sans serif.
+%% big: Come "sfbig", solo serif.
+%% plain: Apertura delle parti e dei capitoli tradizionali di LaTeX; intestazioni di pagina come "big".
+
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=SQL, %Si, va bene anche per il Java, lasciate SQL credetemi
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+\maketitle
+
+%% Dedica (opzionale)
+\begin{dedication}
+	The sun is shinin', I can look at the horizon\\
+	The walls keep gettin' wider, I just hope I never find 'em\\
+	-Wings, Mac Miller
+\end{dedication}
+
+
+%% Sommario (opzionale)
+\abstract
+
+    Nell'ultimo decennio la diffusione di smartphone e tablet si è estesa in tutto il mondo, andando a influenzare la vita privata e lavorativa dell'uomo.\
+
+    Il punto di forza di tali dispositivi risiede nella loro portabilità, agevolata dall'alimentazione mediante una batteria ricaricabile, capace di erogare energia per circa una giornata.\
+
+    In questo progetto viene trattata la realizzazione di una piattaforma in grado di rilevare il livello di capacità dei vari device, quindi mostrarne una panoramica all'utente.\
+
+    L'idea è nata dalla necessità di un ristorante che utilizza dei tablet come menù, dove al termine di ogni servizio un cameriere deve controllare lo stato di carica di tutti i dispositivi.\\
+    Questa soluzione non si applica solamente alla ristorazione, bensì può trovare spazio in più settori, dall'industria 4.0 a uffici di vario tipo, fino ad arrivare all'uso personale. \
+
+    L'IoT è parte integrante del progetto, poiché l'obiettivo è quello di monitorare più apparecchi possibili, sfruttando sensori e componenti già presenti nei device.
+
+
+%% Indice
+\tableofcontents
+
+%% Lista delle tabelle (se presenti)
+%\listoftables
+
+%% Lista delle figure (se presenti)
+\listoffigures
+
+%% Corpo principale del documento
+\mainmatter
+
+%% Parte
+%% La suddivisione in parti � opzionale; solitamente sono sufficienti i capitoli.
+%\part{Parte}
+%%\cite{Knu86} -> thud.bib
+
+
+%% Capitolo
+\chapter{Archittettura concettuale}
+    Il progetto, con il nome d'arte 'Byce', si suddivide in due sviluppi: l'applicativo mobile e la piattaforma server, che in quest'ordine rappresentano i componenti del paradigma client-server.
+
+\section{Analisi dei requisiti}
+    I requisiti fondamentali al funzionamento del sistema sono i seguenti:
+
+    1. Ogni client deve poter rilevare il livello di carica della propria batteria, in seguito, comunicarlo al server tramite messaggi ben definiti.\\
+    I dispositivi mobili devono possedere la capacità di autenticare le informazioni inviate mediante l'uso di opportuni meccanismi, infine, è richiesto che ogni smartphone o tablet sia univocamente identificabile.
+
+    2. Il server deve garantire la ricezione simultanea di informazioni provenienti da diversi device, validare l'attendibilità dei messaggi ricevuti e in caso positivo, inserire le informazioni all'interno di un database.\
+    La piattaforma deve consentire all'utente di visualizzare i dari rilevati, utilizzando un'infografica che rappresenti chiaramente e senza ambiguità il dato trattato.
+
+    3. \`E necessario che i client possano instaurare una connessione con il server a prescindere della locazione in cui si trovino, quindi è richiesta una tecnologia in grado di sostenere una comunicazione costituita da un canale affidabile e immateriale.
+
+\section{Diagramma dei casi d'uso}
+
+    L'interazione prevista dall'utente consiste principalmente nell'avvio dei software a lato server e client, in quest'ultimo, durante il primo avvio, sarà fondamentale fornire il consenso ai rispettivi permessi di sistema che verranno richiesti. Se tali permission vengono rifiutate, l'app sarà limitata nelle sue operazioni.\
+
+    Inoltre, alla prima esecuzione del server, l'utente dovrà creare una password la quale verrà memorizzata nel rispettivo file system. Tale password dovrà essere fornita anche ai dispositivi mobili con il compito di rendere attendibili i messaggi inviati; in assenza di questo input o nel caso fosse errato, l'applicativo non inverà mai i dati, bensì si limiterà a stamparli a video.\
+
+    Infine, le informazioni rilevate saranno consultabili dall'utente mediante un sito web, il quale offrirà un'opportuna rappresentazione grafica.
+
+    Il sistema è pensato per essere autonomo, quindi a prescindere dall'utilizzo dei device gli applicativi continueranno la loro esecuzione in maniera automatizzata, senza richiedere l'intervento umano.
+
+
+\graphicspath{ {./img/} }
+\begin{figure}[h]
+\includegraphics[width=15cm]{useCase}
+\caption{Use Case}
+\label{fig:usecase}
+\centering
+\end{figure}
+
+
+\section{Schema delle classi (UML)}
+
+    Le funzioni rese disponibili dai software, sono rappresentate dalle omonime classi nel seguente modello.
+
+    Il server si suddivide in due sotto moduli, il primo adibito all'autenticazione e registrazione dei device, mentre l'altro all'elaborazione dei dati rilevati. Ogni messaggio ricevuto dovrà essere validato per garantire l'attendibilità del mittente.
+    L’avvio da parte dell’utente mostrato nel caso d’uso precedente è una singola azione che istanzierà entrambi i processi.
+
+
+    I dispositivi mobili si occupano di contattare il server opportuno in base all'azione che vogliono compiere. Inoltre ogni device deve ricavare le informazioni relative alla propria batteria, alcuni metadati per collocare l'informazione in uno spazio temporale e i dettagli necessari a poter essere univocamente identificabile.
+
+    \begin{figure}[h]
+    	\centering
+    	\includegraphics[width=15cm]{uml}
+    	\caption{Schema delle classi}
+    	\label{fig:uml}
+    \end{figure}
+
+\newpage
+
+\section{Modello di sviluppo}
+
+    La metodologia di sviluppo agile è il cuore della realizzazione di questo progetto, tramite l'approccio incrementale si compone il sistema completo, mentre attraverso le iterazioni delle fasi di analisi, implementazione e validazione, si arricchisce il software in questione di nuove funzionalità.
+
+    Il punto di partenza è la realizzazione dell'applicativo mobile, poiché rappresenta il componente più complesso e critico da costruire. Inizialmente si svolge una fase di ricerca delle potenziali tecnologie (quali linguaggi di programmazione, librerie, ecc.) che possano soddisfare i requisiti inviduati, per poi validare le soluzioni mediante opportuni test di prototipazione throw-away. \\
+
+    In seguito, medesime fasi vengono effettuate per lo sviluppo del server.\\
+
+
+\chapter{Stato dell'arte}
+
+    Attualmente nel mercato sono presenti soluzioni simili a quella presentata, le quali però spesso forniscono funzioni limitate senza offrire un sistema completo.
+
+    \section{IFTTT}
+
+    IFTTT è un'app di proprietà della omonima società, disponibile sia per il sistema operativo Android che per iOS.
+    Il software consente all'utente di creare svariate automazioni, compresa la monitorazione del livello della batteria.\\
+    Le funzioni offerte variano a seconda dell'abbonamento a cui l'utente è iscritto.
+
+    1. La versione gratuita dell'applicativo offre lo sviluppo di massimo 5 automazioni, dove ognuna può essere costituita da al più da 3 operazioni, le quali non consentono modifiche di personalizzazione.\\
+    Nello specifico, il monitoraggio della batteria è limitato a determinate azioni: il livello di batteria scende al di sotto del 15\%, il dispositivo viene collegato alla corrente o viceversa, scollegato.
+    Per ottenere tutte le casistiche citate è necessario quindi creare 3 automazioni distinte, in seguito, è possibile comunicare l'evento monitorato attraverso applicazioni predefinite come ad esempio l'invio di una email, oppure un messaggio di testo.
+
+    2. Le offerte a pagamento, possono entrambe soddisfare i requisiti individuati.
+    La differenza principale rispetto al punto precedentemente è l'assenza di limiti nel numero di funzioni, questo comporta maggior facilità nella creazione dei flussi di automazione, inoltre la versione più costosa consente anche la modifica delle funzioni citate poc'anzi.
+
+    \subsection{Problematiche}
+
+    \`E richiesto che la rete alla quale i device sono connessi abbia un'accesso a Internet, poiché le informazioni inviate vengono processate tramite i server dell'azienda proprietaria.\\
+    Questa problematica oltre a rappresentare un'ulteriore spesa per l'utente, può comportare una incopatibilità con l'ambiente di installazione, in quanto la connessione a Internet non sempre è disponibile, ci basti pensare a un ristorante in montagna oppure un paese con leggi che ne limitino l'uso.
+
+    Inoltre, l'attraversamento dei dati nei server aziendali, può rappresentare una perdita della privacy per l'utente.
+
+
+    \section{Automate}
+
+    Automate è un'app disponibile unicamente per Android, sviluppata dalla compagnia LlamaLab.
+
+    La versione gratuita offre 30 funzioni chiamati "blocchi" per ogni automazione, mentre l'edizione a pagamento abbatte questo limite, la quale però non è necessaria per raggiungere l'obiettivo prefissato in questa tesi.
+
+    L'applicativo, come il precedente, consente la creazione di flussi di automazione attraverso un'interfaccia grafica inizialmente un po' confusionaria. Il software consente di rilevare lo stato della batteria e inserirlo all'interno di un pacchetto HTTPS specificando il server che si desidera.
+    Il corpo del messaggio è costituito dal metalinguaggio JSON, per identificare il dispositivo è possibile ricavare il MAC address\footnote[1]{MAC address: un codice esadecimale di 48 bit assegnato univocamente dal produttore della scheda di rete} mediante delle istruzioni a riga di comando\footnote[2]{Le istruzioni a riga di comando sono un'insieme di parole chiave utilizzate per interagire testualmente con il sistema operativo}. \\
+    Tali azioni possono risultare molto complesse se non impossibili, da eseguire per l'utente comune.
+
+    Se l'automazione creata richiede permessi di sistema, come ad esempio la comunicazione di rete, Automate richiede il download di ulteriori applicativi di integrazione, i quali semplicemente creano la richiesta di permission. Questa soluzione è stata adottata per aggirare un problema implementativo, purtroppo può rappresentare una difficoltà per utenti poco esperti.
+
+
+    \section{Apple Shortcut}
+
+    Nel 2017 Apple acquistò 'Shorcut', un applicativo a pagamento già presente nel proprio store.
+    Negli anni il software è stato esteso tramite l'integrazione dell'assistente vocale e ulteriori funzioni.
+
+    Come le soluzioni precedenti, pure Shortcut consente la creazione di svariate automazioni e quindi, di ricavare lo stato di carica dei soli device prodotti dal colosso di Cupertino.
+
+    L'idea implementata con questo software è la stessa vista precedentemente: si ricava il livello di batteria, lo si comunica mediante mediante applicazioni installate come ad esempio un client di posta oppure tramite la scrittura di un file condiviso su un server.
+
+    \section{Il mercato e Byce}
+
+    Riassumendo, le alternative individuate consentono una maggior flessibilità e personalizzazione rispetto al software creato, tuttavia le soluzioni presentano alcune problematiche comuni, tra cui:
+
+    1. Il codice sorgente delle applicazioni non è pubblico, questa scelta pesa negativamente sulla privacy utente, poiché non è possibile validare il corretto comportamento dei programmi.
+
+    2. Lo sviluppo delle automazioni consiste principalmente nell'ideazione di flussi logici, ponendo in cascata varie funzioni esistenti, questa progettazione può risultare complessa per una figura con una debole conoscenza tecnica.
+
+    3. L'assenza di un sistema completo, gli applicativi si limitano a rilevare e inviare l'informazione, senza fornire una soluzione a lato server. La creazione di una piattaforma ad hoc per integrarsi con le soluzioni citate può risultare molto complessa a causa della scarsa personalizzazione dei messaggi inviati dai client.
+
+
+    \graphicspath{ {./img/} }
+    \begin{figure}[h]
+        \includegraphics[width=15cm]{statoArte}
+        \caption{In ordine: IFTTT, Automate, Shortcut}
+        \label{fig:usecase}
+        \centering
+    \end{figure}
+
+    Byce offre un'alternativa già pronta all'uso senza richiedere particolari conoscienze o difficili interazioni all'utente, il sistema realizzato è completamente open-source e adottabile in vari contesti.
+    Attualmente l'applicativo client è stato costruito e validato solamente per la piattaforma Android, però, come verrà specificato nel capitolo opportuno la tecnologia adottata consente una facile estendibilità ad iOS.\\
+    Il server può essere rappresentato da qualsiasi personal computer, senza necessitare una connessione di rete Internet.\\
+
+
+\chapter{Sviluppo applicativo}
+    In questo capitolo verrà trattata l'implementazione delle tecnolgie scelte per realizzare l'intero sistema, quindi sia l'applicativo mobile che il server.
+
+    Lo scambio di messaggi avviene sfruttando la tecnlogia Wi-Fi\footnote[1]{Wi-Fi: Wireless Fidelity, uno standard di rete basato sullo scambio di onde radio e quindi l'assenza di un canale fisico} all'interno di una rete locale privata di classe A (10.0.0.0/24)
+
+    \section{L'app}
+
+        I sistemi operativi presenti sulla maggioranza di tablet e smartphone sono Android e iOS, il primo è un progetto open-source fornito mediante licenza copyleft da Apache e commercializzato principalmente da Google; il secondo è un software totalmente close-source di proprietà dell'azienda Apple.
+
+        In seguito a questa considerazione e alla metodologia di sviluppo adottata, si è deciso di costruire l'applicativo mediante una tecnologia ibrida, quindi realizzare un'app multipiattaforma. Per raggiungere questo scopo vi sono numerose possibilità, soprattutto basate sul linguaggio di programmazione JavaScript, infatti la soluzione scelta è l'uso del framework\footnote[2]{framework web: un motore che consente l'esecuzione di applicativi web al di fuori del browser} Cordova.
+
+        Attualmente, per questo progetto si è sviluppata unicamente l'applicazione per la piattaforma Android.
+
+    \subsection{Funzionalità}
+
+        Come definito nella fase di analisi, l'applicazione monitorerà lo stato della batteria ad ogni variazione, ovvero quando avviene un cambiamento del livello di carica oppure quando il dispositivo viene alimentato o scollegato da una fonte di alimentazione esterna.
+
+        Il device per poter inviare l'informazione rilevata deve essere autorizzato, tale conesenso avviene condividendo la password inserita dall'utente con il server, quest'ultimo deciderà quindi se autenticare il client.\\
+        Di conseguenza, i dispositivi mobili inviano due tipologie di messaggi: di autenticazione oppure di informazione.
+
+    \subsubsection{Pacchetto di autenticazione}
+        I messaggi di autenticazione oltre alla password comprendono ulteriori caratteristiche necessarie a identificare il client.
+
+        Tali informazioni sono:
+        \begin{itemize}
+            \setlength{\itemsep}{1pt}
+            \item UUID\footnote[1]{UUID: Universal Unique Identifier è un'etichetta generata univocamente, la probabilità che ci sia un duplicato non è zero, ma vicina abbastanza da essere trascurabile}: una stringa di 16 caratteri esadecimali, che identifica univocamente il dispositivo.
+            \item OS Version: la versione del sistema operativo in uso (es. \textit{``Android 9''}, \textit{``iOS 15''}).
+            \item Model: il modello dello smartphone o tablet in questione (es. \textit{``iPhone 13''}, \textit{``Samsung Galaxy 5''}).
+            \item Name Device: il nome assegnato al client dall'utente (es. \textit{``iPhone di Alby''}, \textit{``MioAndroid''}).
+        \end{itemize}
+
+    \subsubsection{Pacchetto di informazione}
+        I messaggi di informazione condividono lo stato della batteria ottenuto in seguito a uno degli eventi citati poc'anzi, inoltre è fondamentale mappare il dato in un contesto temporale e quindi ogni pacchetto comprenderà un timestamp\footnote[2]{timestamp è una sequenza di caratteri costituita da una data e/o un orario utilizzata per identificare un'evento in una linea temporale} generato al momento dell'invio.
+        Inoltre, i pacchetti comprenderanno anche l'UUID per poter identificare il device in questione e la password, poiché ogni messaggio deve essere autentico.
+
+
+    \subsection{Apache Cordova}
+        Il framework Cordova nasce nell'azienda Nitobi, acquisita da Adobe System nel 2011 la quale rinomina il progetto in \textit{``Phone Gap''}, per poi rilasciarlo in versione open-source sotto licenza Apache con il nome originale \textit{``Apache Cordova''}.
+
+    La creazione del progetto è relativamente semplice tramite il comando da terminale \texttt{`\$ cordova create Byce'}.
+
+    Il punto di forza del software risiede nella sua semplicità, in quanto lo sviluppo applicativo è costituito principalmente da 3 file:
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+      \item index.html, nel quale si stila l'interfaccia grafica attraverso HTML.\footnote[3]{HTML, ipertesto a marcatori utilizzato per creare pagine web.}
+      \item index.js, un file JavaScript nel quale si implementano tutte le funzioni desiderate.
+      \item config.xml, un documento XML\footnote[4]{Un metalinguaggio a marcatori} che descrive la configurazione generica dell'app, come per esempio il nome, l'icona e informazioni correlate.
+    \end{itemize}
+
+    \newpage
+
+    All'interno del file JavaScript è obbligatorio dichiarare l'ascoltatore che si occuperà di avviare la funzione principale non appena l'applicativo sarà avviato:
+\begin{lstlisting}
+document.addEventListener('deviceready', onDeviceReady, false);
+\end{lstlisting}
+
+    Per integrarsi facilmente con il sistema operativo, sono richieste alcune librerie (chiamate plugin), quindi eseguendo da terminale il comando \texttt{`\$ cordova add plugin {{nome-libreria}}'} è possibile includere nel progetto i componenti necessari, ovvero:
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+        \item `cordova-plugin-battery-status', il quale permette di monitorare la batteria del device.
+        \item `cordova-plugin-device', che fornisce le caratteristiche del dispositivo.
+        \item `cordova-plugin-background-mode', libreria che consente l'esecuzione dell'app in background.
+        \item `cordova-plugin-advanced-http', che si occupa di instaurare la comunicazione di rete tramite richieste POST del protocollo HTTPS.
+    \end{itemize}
+
+    \subsection{Android}
+
+        Lo sviluppo dell'APK\footnote[1]{APK: android application package è il formato applicativo adottato dal sistema operativo Android} richiede l'aggiunta della piattaforma Android al progetto Cordova, quindi via terminale \texttt{`\$ cordova platform add Android'}; successivamente con \texttt{`\$ cordova requirements'} si ottiene una lista dei requisiti per lo sviluppo del sistema operativo aggiunto.
+
+        Android necessità di:
+        \begin{itemize}
+            \setlength{\itemsep}{1pt}
+            \item `Android SDK'\footnote[2]{SDK: software development kit}, per ottenere gli strumenti di sviluppo Android (es. debugger, emulatori ecc.)
+            \item `Gradle', un tool di automazione per lo sviluppo basato sul linguaggio Groovy\footnote[3]{Groovy è un linguaggio di programmazione ad oggetti}.
+            \item `Java JDK'\footnote[4]{Java development kit}, il quale offre l'integrazione del linguaggio Java e di una JVM\footnote[5]{JVM: Java Virtual Machine una macchina astratta che fornisce un ambiente di esecuzione dedicato nel quale può essere eseguito un programma Java}.
+        \end{itemize}
+
+        Una volta soddisfatti i requisiti elencati, è possibile costruire l'APK con \texttt{`\$ cordova build'}, comando che realizzerà il software per ogni piattaforma aggiunta.
+
+            \subsubsection{Permessi di sistema}
+
+            Per motivi di sicurezza e di privacy, i sistemi operativi obbligano i vari programmi a richiedere il permesso da parte dell'utente per poter accedere a specifici contenuti o sensori dei dispositivi.
+            L'unica richiesta che Byce effettua è la possibilità di mantenere l'esecuzione in background.
+
+            Android per tale scopo fornisce un file XML ben specifico, denominato 'AndroidManifest.xml', però, al suo interno non si dichiarano solamente le user-permission bensì anche comportamenti invisibili all'utente come ad esempio l'accesso alla rete.
+            Cordova si occupa di aggiungere in autonomia relative voci, ma spesso viene richiesto l'intervento del programmatore.
+
+            In seguito, si riporta una sezione del manifesto utilizzato.
+\begin{lstlisting}
+<?xml version='1.0' encoding='utf-8'?>
+<manifest android:hardwareAccelerated="true" android:versionCode="10000" android:versionName="1.0.0" package="com.example.hello" xmlns:android="http://schemas.android.com/apk/res/android">
+    ...
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <application android:allowBackup="true" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:supportsRtl="true" android:usesCleartextTraffic="true">
+        ...
+        <service android:name="de.appplant.cordova.plugin.background.ForegroundService" />
+    </application>
+</manifest>
+
+\end{lstlisting}
+
+        \subsubsection{UUID}
+            L'UUID utilizzato per identificare i vari dispositivi può variare a seconda della versione Android installata:
+            \begin{itemize}
+                \setlength{\itemsep}{1pt}
+                \item Fino alla versione 7 di Android, l'UUID viene generato casualmente al primo avvio del dispositivo e resta invariato.
+                \item Da Android 8 in poi, l'UUID è una combinazione della firma applicativa, l'utente e del dispositivo in uso; tale stringa può variare nel caso si cambi la chiave utilizzata per firmare l'app oppure se si ripristina il device alle impostazioni di fabbrica (factory reset).
+            \end{itemize}
+            Quindi è necessario firmare l'apk creata, tale azione dichiara e garantice che il software non è stato corrotto o alterato fino a quel momento, se così fosse la firma risulterebbe errata rispetto al codice presente in quanto tale validazione avviene mediante un hash crittografico.\\
+
+
+        \graphicspath{ {./img/} }
+        \begin{figure}[h]
+            \includegraphics[width=15cm]{byceGUI}
+            \caption{Byce all'avvio, password errata, password corretta}
+            \label{fig:usecase}
+            \centering
+        \end{figure}
+
+\newpage
+
+    \section{Il server}
+
+        Il server non è altro che un semplice personal computer, l'esecuzione del software crea due socket\footnote[1]{socket: identifica un processo di rete in esecuzione su un dispositivo} all'indirizzo IP locale, il quale viene configurato staticamente vista l'assenza di un DNS privato.
+
+        Le porte utilizzate sono la \texttt{`8124'} per la registrazione dei dati rilevati e la \texttt{`8127'} per l'autenticazione, su quest'ultima vi sarà l'unico processo abilitato inviare messaggi verso i client, poiché l'autorizzazione viene assegnata tramite pacchetti HTTPS.
+
+        Durante la prima esecuzione, il server richiede la creazione della password di autenticazione, la quale verrà cifrata tramite la funzione di hash `MD5' e successivamente, sarà memorizzata all'interno di un file.
+        Quindi, alla ricezione di un messaggio, il server esegue l'hash della password presente nel pacchetto, per poi confrontarla con il digest\footnote[2]{digest: è l'output di una funzione di hash} esistente; se le password coincidono, il pacchetto verrà processato opportunamente, salvando i dati rilevati nel caso di un pacchetto di `informazioni' oppure fornendo l'autenticazione e registrando il device se sconosciuto (un nuovo client).
+
+
+
+
+            \subsection{NodeJS}
+                NodeJS è un progetto open source multipiattaforma, il quale permette mediante l'interprete V8\footnote[1]{Engine V8: Interprete JavaScript open-source sviluppato da Chromium} di Chromium, l'esecuzione di programmi back-end sviluppati in JavaScript.
+
+                L'adozione del medesimo linguaggio di programmazione del client a livello server, consente un'ottima integrazione tra i sistemi, poiché i messaggi scambiati sono codificati con un content-type di tipo
+                JSON (JavaScript Object Notation) standard fortemente implementato nella tecnologia scelta.
+
+                Node offre l'aggiunta di svariate librerie (chiamate moduli), utilizzate per interfaccarsi con componenti del computer oppure con altri software. Con la parola chiave \texttt{require(`modulo')} si includono nel progetto le funzioni presenti nella rispettiva libreria.
+
+                I moduli richiesti al server Byce sono i seguenti:
+                \begin{itemize}
+                    \setlength{\itemsep}{1pt}
+                    \item \texttt{var https = require(`https')}, modulo che implementa il protocollo HTTPS.
+                    \item \texttt{var fs = require(`fs')}, per interfacciarsi con il filesystem.
+                    \item \texttt{var mysql = require(`mysql')}, per interagire con il database creato.
+                    \item \texttt{var crypto = require(`crypto')}, libreria che fornisce funzioni crittografiche tra cui MD5.
+                    \item \texttt{var readline = require(`readline')}, per ricevere l'input via terminale da parte dell'utente per creare la password di autenticazione.
+                \end{itemize}
+
+                L'esecuzione del programma sviluppato è immediata, mediante il comando da terminale \texttt{ `\$ node server.js'}.
+
+                \subsubsection{NPM}
+                NPM è il gestore pacchetti di Node, si occupa di installare, aggiornare o rimuovere programmi e librerie in maniera consistente; Tutti i moduli citati poc'anzi sono disponibili attraverso il comando \texttt{`\$ npm install {{nome-libreria}}'} da terminale.
+                Inoltre, viene utilizzato anche per l'installazione del framework Cordova, utilizzato nello sviluppo client.
+
+
+            \subsection{Il database}
+                La base di dati utilizzata viene gesita attraverso il MySql di Oracle, scelta dettata principalmente dal modulo NodeJS ben documentato, nonché dalle sue ottime prestazioni e semplicità.
+
+                Una volta installato e avviato il servizio, l'accesso può avvenire via terminale con il comando \texttt{`\$ mysql -u root -p'}, quindi si inserisce la password dell'utente di sistema.
+
+                La creazione del database si effettua con la query \texttt{`CREATE DATABASE BYCE;'} mentre le entità necessarie al sistema sono rappresentate dalle tabelle: `DEVICES' e `DATALOG', che in quest'ordine memorizzano le caratteristiche dei client e le rispettive informazioni rilevate.
+
+\begin{lstlisting}
+CONNECT BYCE; --per utilizzare il dabase creato
+CREATE TABLE DEVICES(
+    UUID VARCHAR(16) PRIMARY KEY,
+    NAME_DEVICE VARCHAR(128),
+    MODEL VARCHAR(128),
+    OS_VERSION VARCHAR(128)
+);
+
+CREATE TABLE DATALOG(
+    UID VARCHAR(128) NOT NULL,
+    LOG_DATE DATE NOT NULL,
+    LOG_TIME TIME NOT NULL,
+    BAT_LEVEL INTEGER NOT NULL,
+    IN_CHARGE BOOLEAN NOT NULL,
+    PRIMARY KEY (UID, LOG_DATE, LOG_TIME, IN_CHARGE),
+    FOREIGN KEY(UID) REFERENCES DEVICES(UID)
+);
+\end{lstlisting}
+
+                Come chiave primaria per i dispositivi si sfrutta l'attributo `UUID', un valore pressoché unico, la probabilità che esista una duplicazione della stringa generata non è zero, ma vicina abbastanza da essere ignorata; inoltre, la possibilità che un'utente possieda dei device che generino lo stesso UUID è pressoché impossibile.
+
+                La tabella `DATALOG' viene identificata univocamente dall'insieme di tutti gli attributi presenti, tale soluzione può essere più onerosa rispetto all'utilizzo di un'intero che incrementa in automatico, però offre una consistenza maggiore dei dati nonché evita inserimenti duplici (vedesi la sezione di sicurezza).
+                Il livello di batteria e lo stato di alimentazione possono sembrare superflui, ma invece sono necessari, poiché può accadere che lo stato di carica vari molto velocemente, ad esempio nel caso di una batteria difettosa o di un calo di corrente.
+
+                Il server esegue solamente l'azione di inserimento nel database, attraverso il modulo Node, in seguito si riporta un'esempio.
+\begin{lstlisting}
+//creazione della connessione
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "Fixed23",
+  database: "BYCE"
+});
+
+//controllo della connessione
+con.connect(function(err) {
+      if (err) throw err;
+
+      //nessun errore, si procede alla creazione della query
+      var sql = "INSERT INTO DATALOG(UID,LOG_DATE,LOG_TIME,BAT_LEVEL,IN_CHARGE) VALUES ('" + dataPack.UID+"','"+dataPack.LOG_DATE+"','"+dataPack.LOG_TIME+"',"+dataPack.BAT_LEVEL+","+dataPack.INCHARGE+");";
+
+      //esecuzione della query
+      con.query(sql, function (err, result) {
+        if (!err){
+            console.log("\tInfo stored to db");
+        }else{
+            console.log(err);
+        };
+      });
+ });
+
+\end{lstlisting}
+            \subsection{Grafana}
+
+                    I dati raccolti vengono mostrati all'utente mediante Grafana, un'applicazione web in grado di ricavare i dati da un database, analizzarli e in fine rappresentarli attraverso un'inforgrafica interattiva.\\
+                    Il software open-source è self-hosted\footnote[1]{self-hosted: software eseguibili e mantenuti su server privati come un personal computer} (come MySql) e disponibile alla porta \texttt{`3000'} del server; l'accesso è protetto da username e password, la quale sarà obbligatorio modificare durante il primo accesso.
+                    Terminata la configurazione iniziale, è possibile creare una dashboard che conterrà i vari pannelli, uno per ogni informazione che si desidera mostrare.
+
+
+                    -> screen grafana
+
+                    I pannelli sviluppati distribuiscono visivamente i dati ottenuti tramite le seguenti query:
+\begin{lstlisting}
+SELECT BAT_LEVEL, NAME_DEVICE FROM DATALOG DL1
+INNER JOIN DEVICES D ON D.UID = DL1.UID
+WHERE DL1.LOG_DATE=CURRENT_DATE AND NOT EXISTS (SELECT * FROM DATALOG DL2 WHERE
+    DL1.UID=DL2.UID AND
+     DL1.LOG_DATE=DL2.LOG_DATE AND DL1.LOG_TIME<DL2.LOG_TIME)
+GROUP BY BAT_LEVEL, NAME_DEVICE;
+-- Mostra l'ultimo livello di batteria dei device monitorati nella data odierna (pannello: Battery Level)
+
+SELECT DL1.IN_CHARGE, DL1.LOG_TIME, D.NAME_DEVICE FROM DATALOG DL1
+INNER JOIN DEVICES D ON DL1.UID=D.UID
+WHERE DL1.LOG_DATE=CURRENT_DATE AND
+NOT EXISTS(SELECT * FROM DATALOG DL2 WHERE
+DL1.LOG_TIME<DL2.LOG_TIME AND
+DL1.UID=DL2.UID AND
+DL1.LOG_DATE=DL2.LOG_DATE);
+-- Fornisce un cruscotto dello stato di alimentazione dei device (pannello: In charge)
+
+
+SELECT UNIX_TIMESTAMP(LOG_TIME) AS time_sec, BAT_LEVEL AS value, NAME_DEVICE
+FROM DATALOG DL1
+INNER JOIN DEVICES D1 ON D1.UID=DL1.UID
+WHERE DL1.LOG_DATE=CURRENT_DATE
+GROUP BY time_sec, value, NAME_DEVICE
+ORDER BY time_sec, value, NAME_DEVICE;
+-- Rappresenta l'andamento del livello di batteria dei device monitorati, nella data odierna (pannello: Daily)
+
+
+SELECT UNIX_TIMESTAMP(LOG_TIME) AS time_sec, BAT_LEVEL AS value
+FROM DATALOG DL1
+INNER JOIN DEVICES D ON D.UID = DL1.UID
+WHERE NAME_DEVICE='AlbyAndroid'
+GROUP BY time_sec, value
+ORDER BY time_sec, value
+-- Genera lo storico del livello di carica del device chiamato "AlbyAndroid" (pannello: Dettaglio Alby Android)
+
+SELECT UUID, NAME_DEVICE, MODEL, OS_VERSION FROM DEVICES;
+-- Per rappresentare tutti i dispositivi registrati
+
+\end{lstlisting}
+
+\section{Il pacchetto}
+    I pacchetti scambiati sono codificati con un content-type JSON, a lato client tale codifica avviene mediante l'istruzione: \texttt{`cordova.plugin.http.setDataSerializer('json');'}, mentre il server effettua \texttt{`JSON.parse(pacchetto)'} in ricezione e in invio (per confermare l'autenticazione) manda un pacchetto con content-type plain/text contenente
+
+    Si riporta un'esempio di messaggio:
+\begin{lstlisting}
+{
+  password: 'fidelio',
+  UID: 'c0f0deab699903f0',
+  LOG_DATE: '2022/6/2',
+  LOG_TIME: '19:27:11',
+  BAT_LEVEL: '6',
+  INCHARGE: 'true'
+}
+\end{lstlisting}
+
+\chapter{Sicurezza informatica}
+In questo capitolo verranno trattate tutte le tematiche legate alla sicurazza informatica, quindi autenticazioni e potenziali minacce all'integrità del sistema.
+Come citato precedentemente, il canale comunicativo tra client e server viete instaurato mediante la tecnologia Wi-Fi di una rete privata.
+La sicurezza di tale rete è un'aspetto esterno al progetto, ad ogni modo, per evitare attacchi da dispositivi non voltui, "basta" proteggere l'accesso mediante una password pre-condivisa di tipo WPA2.
+
+\section{HTTPS}
+
+    La comunicazione avviene attraverso il protocollo HTTPS\footnote[1]{HyperText Transport Protocol Secure, estende il protocollo HTTP aggiungendogli la crittografia SSL/TLS}, quindi per poter istanziare un server è richiesta una chiave pubblica utilizzabile dai client e una certificazione (standard X.509) che ne garantisca l'identità.
+
+    Tale certificazione viene fornita (spesso a pagamento) presso una Certification Autorithy (CA), la quale si impegna ad effettuare le opportune verifiche e in seguito a rilasciare l'autorizzazione. Al fine di evitare tale processo si adotta la soluzione di un certificato self-signed, che vede il client fidarsi della dichiarazione server senza confrontarla con una CA.
+    Questa modalità fornisce quindi una comunicazione sicura ma non autentica, per il progetto realizzato è un buon compromesso anche se questa politica consente l'attacco `man in the middle' (trattato nella sezione successiva).
+
+    Per ottenere i certificati self-signed basta eseguire i da terminale i seguenti comandi:
+\begin{lstlisting}
+openssl genrsa -out key.pem
+openssl req -new -key key.pem -out csr.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+\end{lstlisting}
+
+    Al termine del processo vengono creati i file contenenti la chiave pubblica e la certificazione, i quali dovranno essere inclusi nel codice JavaScript del server
+\begin{lstlisting}
+var options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+}
+...
+https.createServer(options,function(req,res){ ... });
+\end{lstlisting}
+
+    Il client invece, deve semplicemente non eseguire alcuna verifica del certificato fornito dal server presso una Certification Autorithy.
+\begin{lstlisting}
+cordova.plugin.http.setServerTrustMode('nocheck', () => {
+    console.log("success, no check");
+}, () => {
+    console.log("Error server trust mode");
+});
+\end{lstlisting}
+
+
+\section{Attacchi e soluzioni}
+    L'acquisizione dei dati da parte server rappresenta un aspetto da tutelare contro informazioni non autentiche, poiché la base di dati deve contenere solamente tuple riguardanti dispositivi riconosciuti dall'utente.
+    Per prevenire questa minaccia si adotta l'autenticazione dei pacchetti tramite una password condivisa tra server e client; l'implementazione di tale meccanismo però non è sufficiente nel caso di pacchetti in chiaro (HTTP), in quanto un'attaccante in ascolto sul canale sarebbe in grado di intercettare un pacchetto e analizzarlo senza difficoltà. Per questo scopo viene adottato il protocollo HTTPS, che come spiegato poc'anzi implementa SSL/TLS per la generazione di socket sicure, quindi utilizzando la chiave pubblica del destinatario per cifrare e quella privata (conosciuta unicamente dal destinatario) per decifrare.
+
+    L'assenza di verifica del certificato presso una CA lascia spazio a un'attacco conosciuto come `man in the middle', che vede un'attaccante dichiararsi come il destinatario (in questo caso il server), quindi il client non eseguendo controlli si fida dell'identità ricevuta. Questa vulnerabilità si risolve utilizzando un certificato X.509 rilasciato da una Certification Autorithy ed eseguendo le opportune verifiche.\\
+    \textit{ Per questa tesi è stato accettato tale compromesso, nel caso di un'installazione nel mercato è opportuno adottare la soluzione citata.}
+
+    Un'ulteriore attacco è il `replay', dove un'attaccante intercetta un pacchetto e lo invia nuovamente al server, tale minaccia però è irrilevante, poiché il pacchetto non può essere alterato o analizzato a causa della crittografia, quindi il server riceverebbe dei dati già esistenti nella propria base di dati e ignorerebbe tali informazioni.
+    Nel caso il server riceva un pacchetto di informazioni duplicato il vincolo di univocità applicato mediante la chiave primaria non permetterebbe tale inserimento; mentre con un messaggio di autenticazione il server non aggiungerebbe un nuovo client in quanto già esistente, ma fornirebbe l'autenticazione al mittente (in questo caso l'attacante), tale autenticazione però non è altro che un valore booleano (come spiegato nel capitolo precedente) utilizzato solo per ottimizzare il funzionamento dell'applicativo mobile, quindi l'attaccante non ricaverebbe alcuna informazione confidenziale.
+
+
+    La prima versione di Byce non implementava alcuna misura di sicurezza poiché le comunicazioni avvenivano via HTTP,
+    tale versione è stata confrontata con la finale in un'analisi di pacchetti mediante il software Wireshark\footnote[1]{Wireshark: software open-source che consente di visionare e quindi analizzare i pacchetti ricevuti da un computer.}.
+
+    \graphicspath{ {./img/} }
+    \begin{figure}[h]
+        \includegraphics[width=15cm]{SniffingPacchettoInChiaro}
+        \caption{Byce con HTTP}
+        \label{fig:usecase}
+        \centering
+    \end{figure}
+    \graphicspath{ {./img/} }
+    \begin{figure}[h]
+        \includegraphics[width=15cm]{SniffingPacchettoCifrato}
+        \caption{Byce con HTTPS}
+        \label{fig:usecase}
+        \centering
+    \end{figure}
+
+
+
+\chapter{Conclusioni}
+\section{Tecnologie utilizzate}
+Per lo sviluppo di questo progetto sono stati usati dispositivi presenti in un'ambiente casalingo, nello specifico:
+
+ Latitude E4310 + Ubuntu 21.10
+ java jdk 1.8
+ node js v. 12.22
+ npm 7.5.2
+ android platform 30
+
+ * Android studio `$ sudo snap install android-studio --classic`
+ * Gradle `$ sudo apt-get install gradle`
+
+i device sono:
+- alby android samsung galaxy s5 con android 9 cynogen?
+-
+
+\section{Problematiche}
+\section{Sviluppi futuri}
+
+
+%% Fine dei capitoli normali, inizio dei capitoli-appendice (opzionali)
+\appendix
+
+
+%\part{Appendici}
+
+%%\chapter{Titolo della prima appendice}
+
+%% Parte conclusiva del documento; tipicamente per riassunto, bibliografia e/o indice analitico.
+\backmatter
+
+
+
+%% Bibliografia (praticamente obbligatoria)
+\bibliographystyle{plain_\languagename}%% Carica l'omonimo file .bst, dove \languagename � la lingua attiva.
+%% Nel caso in cui si usi un file .bib (consigliato)
+\bibliography{thud}
+%% Nel caso di bibliografia manuale, usare l'environment thebibliography.
+
+%% Per l'indice analitico, usare il pacchetto makeidx (o analogo).
+
+\end{document}
+
+--- Istruzioni per l'aggiunta di nuove lingue ---
+Per ogni nuova lingua utilizzata aggiungere nel preambolo il seguente spezzone:
+    \addto\captionsitalian{%
+        \def\abstractname{Sommario}%
+        \def\acknowledgementsname{Ringraziamenti}%
+        \def\authorcontactsname{Contatti dell'autore}%
+        \def\candidatename{Candidato}%
+        \def\chairname{Direttore}%
+        \def\conclusionsname{Conclusioni}%
+        \def\cosupervisorname{Co-relatore}%
+        \def\cosupervisorsname{Co-relatori}%
+        \def\cyclename{Ciclo}%
+        \def\datename{Anno accademico}%
+        \def\indexname{Indice analitico}%
+        \def\institutecontactsname{Contatti dell'Istituto}%
+        \def\introductionname{Introduzione}%
+        \def\prefacename{Prefazione}%
+        \def\reviewername{Controrelatore}%
+        \def\reviewersname{Controrelatori}%
+        %% Anno accademico
+        \def\shortdatename{A.A.}%
+        \def\summaryname{Riassunto}%
+        \def\supervisorname{Relatore}%
+        \def\supervisorsname{Relatori}%
+        \def\thesisname{Tesi di \expandafter\ifcase\csname thud@target\endcsname Laurea\or Laurea Magistrale\or Dottorato\fi}%
+        \def\tutorname{Tutor aziendale%
+        \def\tutorsname{Tutor aziendali}%
+    }
+sostituendo a "italian" (nella 1a riga) il nome della lingua e traducendo le varie voci.
