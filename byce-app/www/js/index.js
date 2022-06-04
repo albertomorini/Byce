@@ -109,10 +109,9 @@ function onDeviceReady() {
         window.addEventListener("batterystatus", logStatusObject, false);
 
         //In Android 9+, when an app is on background for more than 5min the OS kills it, so we need to take back to foreground (and next return to background)
-        setInterval(()=>{
-            cordova.plugins.backgroundMode.unlock(); //is like moveToForeground, but works even if the phone is locked
-            cordova.plugins.backgroundMode.moveToBackground();
-        }, 240000); //4min
+        cordova.plugins.backgroundMode.on('activate', function() {
+           cordova.plugins.backgroundMode.disableWebViewOptimizations();
+        });
 
     });
 }
