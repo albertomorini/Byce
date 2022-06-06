@@ -127,10 +127,10 @@
 
 \graphicspath{ {./img/} }
 \begin{figure}[h]
+\centering
 \includegraphics[width=15cm]{useCase}
 \caption{Use Case}
 \label{fig:usecase}
-\centering
 \end{figure}
 
 
@@ -200,12 +200,12 @@
     Se l'automazione creata richiede permessi di sistema, come ad esempio la comunicazione di rete, Automate richiede il download di ulteriori applicativi di integrazione, i quali semplicemente creano la richiesta di permission. Questa soluzione è stata adottata per aggirare un problema implementativo, purtroppo può rappresentare una difficoltà per utenti poco esperti.
 
 
-    \section{Apple Shortcut}
+    \section{Apple Shortcuts}
 
-    Nel 2017 Apple acquistò 'Shorcut', un applicativo a pagamento già presente nel proprio store.
+    Nel 2017 Apple acquistò 'Shorcuts', un applicativo a pagamento già presente nel proprio store.
     Negli anni il software è stato esteso tramite l'integrazione dell'assistente vocale e ulteriori funzioni.
 
-    Come le soluzioni precedenti, pure Shortcut consente la creazione di svariate automazioni e quindi, di ricavare lo stato di carica dei soli device prodotti dal colosso di Cupertino.
+    Come le soluzioni precedenti, pure Shortcuts consente la creazione di svariate automazioni e quindi, di ricavare lo stato di carica dei soli device prodotti dal colosso di Cupertino.
 
     L'idea implementata con questo software è la stessa vista precedentemente: si ricava il livello di batteria, lo si comunica mediante mediante applicazioni installate come ad esempio un client di posta oppure tramite la scrittura di un file condiviso su un server.
 
@@ -222,10 +222,10 @@
 
     \graphicspath{ {./img/} }
     \begin{figure}[h]
-        \includegraphics[width=15cm]{statoArte}
-        \caption{In ordine: IFTTT, Automate, Shortcut}
-        \label{fig:usecase}
         \centering
+        \includegraphics[width=15cm]{statoArte}
+        \caption{In ordine: IFTTT, Automate, Shortcuts}
+        \label{fig:usecase}
     \end{figure}
 
     Byce offre un'alternativa già pronta all'uso senza richiedere particolari conoscienze o difficili interazioni all'utente, il sistema realizzato è completamente open-source e adottabile in vari contesti.
@@ -349,10 +349,10 @@ document.addEventListener('deviceready', onDeviceReady, false);
 
         \graphicspath{ {./img/} }
         \begin{figure}[h]
+            \centering
             \includegraphics[width=15cm]{byceGUI}
             \caption{Byce all'avvio, password errata, password corretta}
             \label{fig:usecase}
-            \centering
         \end{figure}
 
 \newpage
@@ -460,8 +460,16 @@ con.connect(function(err) {
                     Il software open-source è self-hosted\footnote[1]{self-hosted: software eseguibili e mantenuti su server privati come un personal computer} (come MySql) e disponibile alla porta \texttt{`3000'} del server; l'accesso è protetto da username e password, la quale sarà obbligatorio modificare durante il primo accesso.
                     Terminata la configurazione iniziale, è possibile creare una dashboard che conterrà i vari pannelli, uno per ogni informazione che si desidera mostrare.
 
+                    \graphicspath{ {./img/} }
+                    \begin{figure}[h]
+                        \centering
+                        \includegraphics[width=15cm]{grafanaShot}
+                        \caption{Dashboard grafana}
+                        \label{fig:Infografica di Grafana }
 
-                    -> screen grafana
+                    \end{figure}
+                    La dashboard in figura mostra i dati delle ultime 3 ore dei dispositivi registrati, i quali all'orario della schermata (16:10) erano alimentati da una fonte esterna per \textit{`S96Pro'} e a batteria per \textit{`AlbyAndroid'}
+\newline
 
                     I pannelli sviluppati distribuiscono visivamente i dati ottenuti tramite le seguenti query:
 \begin{lstlisting}
@@ -506,9 +514,9 @@ SELECT UUID, NAME_DEVICE, MODEL, OS_VERSION FROM DEVICES;
 \end{lstlisting}
 
 \section{Il pacchetto}
-    I pacchetti scambiati sono codificati con un content-type JSON, a lato client tale codifica avviene mediante l'istruzione: \texttt{`cordova.plugin.http.setDataSerializer('json');'}, mentre il server effettua \texttt{`JSON.parse(pacchetto)'} in ricezione e in invio (per confermare l'autenticazione) manda un pacchetto con content-type plain/text contenente
+    I pacchetti scambiati sono codificati con un content-type JSON, a lato client tale codifica avviene mediante l'istruzione: \texttt{`cordova.plugin.http.setDataSerializer('json');'}, mentre il server effettua \texttt{`JSON.parse(pacchetto)'} in ricezione e in invio spedisce un pacchetto con content-type plain/text contenente un valore booleano per restituire l'esito dell'autenticazione.
 
-    Si riporta un'esempio di messaggio:
+    Un esempio di un messaggio di informazione:
 \begin{lstlisting}
 {
   password: 'fidelio',
@@ -567,7 +575,7 @@ cordova.plugin.http.setServerTrustMode('nocheck', () => {
     \textit{ Per questa tesi è stato accettato tale compromesso, nel caso di un'installazione nel mercato è opportuno adottare la soluzione citata.}
 
     Un'ulteriore attacco è il `replay', dove un'attaccante intercetta un pacchetto e lo invia nuovamente al server, tale minaccia però è irrilevante, poiché il pacchetto non può essere alterato o analizzato a causa della crittografia, quindi il server riceverebbe dei dati già esistenti nella propria base di dati e ignorerebbe tali informazioni.
-    Nel caso il server riceva un pacchetto di informazioni duplicato il vincolo di univocità applicato mediante la chiave primaria non permetterebbe tale inserimento; mentre con un messaggio di autenticazione il server non aggiungerebbe un nuovo client in quanto già esistente, ma fornirebbe l'autenticazione al mittente (in questo caso l'attacante), tale autenticazione però non è altro che un valore booleano (come spiegato nel capitolo precedente) utilizzato solo per ottimizzare il funzionamento dell'applicativo mobile, quindi l'attaccante non ricaverebbe alcuna informazione confidenziale.
+    Nel caso il server riceva un pacchetto di informazioni duplicato il vincolo di univocità applicato dalla chiave primaria non permetterebbe tale inserimento; mentre con un messaggio di autenticazione il server non aggiungerebbe un nuovo client in quanto già esistente, ma fornirebbe l'autorizzazione all'invio dei pacchetti dati da parte del mittente mittente (in questo caso l'attacante), tale autenticazione però non è altro che un valore booleano (come spiegato nel capitolo precedente) utilizzato solo per ottimizzare il funzionamento dell'applicativo mobile, quindi l'attaccante non ricaverebbe alcuna informazione confidenziale.
 
 
     La prima versione di Byce non implementava alcuna misura di sicurezza poiché le comunicazioni avvenivano via HTTP,
@@ -575,40 +583,51 @@ cordova.plugin.http.setServerTrustMode('nocheck', () => {
 
     \graphicspath{ {./img/} }
     \begin{figure}[h]
+        \centering
         \includegraphics[width=15cm]{SniffingPacchettoInChiaro}
         \caption{Byce con HTTP}
         \label{fig:usecase}
-        \centering
+
     \end{figure}
     \graphicspath{ {./img/} }
     \begin{figure}[h]
+        \centering
         \includegraphics[width=15cm]{SniffingPacchettoCifrato}
         \caption{Byce con HTTPS}
         \label{fig:usecase}
-        \centering
     \end{figure}
 
 
 
 \chapter{Conclusioni}
-\section{Tecnologie utilizzate}
-Per lo sviluppo di questo progetto sono stati usati dispositivi presenti in un'ambiente casalingo, nello specifico:
 
- Latitude E4310 + Ubuntu 21.10
- java jdk 1.8
- node js v. 12.22
- npm 7.5.2
- android platform 30
+In conclusione, Byce vuole creare un ponte tra l'industria 4.0 e il mondo dei dispositivi mobili, con lo scopo di fornire all'utente uno strumento di monitoraggio e analisi nonché di automatizzare compiti facendogli risparmiare tempo che possono rilevarsi noiosi.
 
- * Android studio `$ sudo snap install android-studio --classic`
- * Gradle `$ sudo apt-get install gradle`
+Come annunciato nell'introduzione, il sistema trova spazio in vari settori, in questa tesi il sistema è stato installato in un'ambiente casalingo utilizzando un vecchio personal computer e dei semplici smartphone.
 
-i device sono:
-- alby android samsung galaxy s5 con android 9 cynogen?
--
+L'intero progetto è reso disponibile sul sito: \url{https://github.com/albertomorini/Byce}
 
-\section{Problematiche}
-\section{Sviluppi futuri}
+\section{Problematiche e sviluppi futuri}
+
+\subsection{Problematiche}
+Dalla versione 9 di Android, il sistema operativo interrompe totalmente l'esecuzione di un'app in background da più di circa 5 minuti, questo purtroppo blocca l'invio dei dati seppur mantiene la connessione instaurata.
+Per aggirare questa problematica vi sono numerose strategie, l'ottimale è quella di indicare ad Android di non ottimizzare le risorse utilizzate da Byce, quindi:
+\begin{lstlisting}
+cordova.plugins.backgroundMode.on('activate', function() { //nel momento in cui l'applicativo va in background
+   cordova.plugins.backgroundMode.disableWebViewOptimizations(); //disabilitiamo l'ottimizzazione
+});
+\end{lstlisting}
+Un'ulteriore alternativa implementata in precedenza consisteva nel portare l'applicativo in foreground e poi nuovamente in background ogni 5 minuti, purtoppo questa soluzione creava effetti non desiderati come l'accensione del display.
+
+\subsection{Sviluppi futuri}
+
+La versione attuale di Byce può essere arricchita di numerose funzionalità e soprattutto estesa al sistema operativo iOS.
+Future funzionalità possono essere rappresentate da un'ampliamento dei dati rilevati, quindi non limitarsi al raccogliere lo stato della batteria bensì anche supervisionare risorse come l'utilizzo della CPU, la memoria fisica e virtuale utilizzata e ulteriori.
+
+\`E possibile integrare un sistema di analisi dei dati\footnote[1]{Come ad esempio una Business Intelligence} al fine di individuare dispositivi con batterie difettose o alimentatori mal funzionanti, inserendo anche una stima dei costi di ricarica elettrica dei device.
+
+
+Infine, la piattaforma Byce può essere installata in una rete WAN\footnote[2]{WAN: Wide Area Network, insieme di LAN, internet} su un server centralizzato, quindi gestendo molti dispositivi appartenenti a utenti diversi. Offrendo sempre la possibilità di self-hosting, fornendo la scelta all'utente di indicare il server che desidera (se il proprio o quello esterno).
 
 
 %% Fine dei capitoli normali, inizio dei capitoli-appendice (opzionali)
@@ -624,11 +643,35 @@ i device sono:
 
 
 
-%% Bibliografia (praticamente obbligatoria)
-\bibliographystyle{plain_\languagename}%% Carica l'omonimo file .bst, dove \languagename � la lingua attiva.
-%% Nel caso in cui si usi un file .bib (consigliato)
-\bibliography{thud}
-%% Nel caso di bibliografia manuale, usare l'environment thebibliography.
+
+\begin{thebibliography}{9}
+\bibitem{latexdps}
+    Sito ufficiale di Apache Cordova: \url{https://cordova.apache.org/}
+\bibitem{texbook}
+    Documentazione Shortcuts di Apple: \url{https://support.apple.com/guide/shortcuts/welcome/ios}\\
+    \textit{Il download avviene unicamente tramite lo store ufficiale:} \url{https://apps.apple.com/us/app/shortcuts/id915249334}.
+\bibitem{latexdps}
+    Pagina principale di IFTTT: \url{https://ifttt.com/explore}
+\bibitem{latexdps}
+    Sito ufficiale con documentazione per Automate di LlamaLab: \url{https://llamalab.com/automate/}
+\bibitem{latexdps}
+    NodeJS e NPM: \url{https://nodejs.org/en/}
+\bibitem{latexdps}
+    Sito web di Grafana Visualization: \url{https://grafana.com/grafana/}
+\bibitem{latexdps}
+    Sito ufficiale di MySql: \url{https://www.mysql.com/}
+\bibitem{latexdps}
+    Java Development Kit \url{https://www.oracle.com/java/technologies/}
+\bibitem{latexdps}
+    Sito al tool Gradle \url{https://gradle.org/}
+\bibitem{latexdps}
+    Pagina officiale di Android Studio: \url{https://developer.android.com/studio/}
+\bibitem{latexdps}
+    Documentazione Android per firmare l'apk realizzata: \url{https://developer.android.com/studio/command-line/apksigner#usage-sign}
+
+
+\end{thebibliography}
+
 
 %% Per l'indice analitico, usare il pacchetto makeidx (o analogo).
 
