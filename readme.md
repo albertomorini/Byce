@@ -12,8 +12,11 @@ On the server side we can find 'server.js' which is the code developed thus to r
 
 Actually, Byce works on a LAN (Local Area Network), isn't hosted on a public server.
 
-#### Development
+### Development
 The mobile app is created with <a href="https://cordova.apache.org/">Apache Cordova</a>, a JavaScript framework that allows to build mobile apps for Android and iOS.
+
+The mobile app
+![ByceGUI](./+img/byceGUI.png)
 > Has been created just an apk for Android, iOS will follows in future.
 
 Server's code is made with JavaScript and executed by <a href="https://nodejs.org/en/">NodeJS</a>, but, isn't the only technology! There are other self-hosted software used to provide a full solution, in order:
@@ -22,12 +25,11 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 
 2. <a href="https://grafana.com/grafana/">Grafana Visualisation</a> used to create the infographics of data retrieved.
 
-
 ![grafana](./+img/grafanaShot.png)
 > A screenshot of the Grafana's dashboard (there's the configuration file of it -> server/grafana_export.json)
 
 
-#### Cybersecurity
+## Cybersecurity
 Data received by server must belongs to devices known by the end-user, so every message have to be authenticated with a password.
 If the password is correct, server will send a message with a boolean value used by the app to give a feedback to the user (and hide the input field).
 The password picked by the user on the first start-up is hashed via MD5 and stored into a file.
