@@ -22,7 +22,10 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 
 2. <a href="https://grafana.com/grafana/">Grafana Visualisation</a> used to create the infographics of data retrieved.
 
-!(grafana)[https://github.com/albertomorini/Byce/blob/main/%2Bimg/grafanaShot.png]
+
+
+![grafana](./+img/grafanaShot.png)
+
 > A screenshot of the Grafana's dashboard (there's the configuration file of it -> server/grafana_export.json)
 
 
