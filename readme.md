@@ -23,9 +23,7 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 2. <a href="https://grafana.com/grafana/">Grafana Visualisation</a> used to create the infographics of data retrieved.
 
 
-
 ![grafana](./+img/grafanaShot.png)
-
 > A screenshot of the Grafana's dashboard (there's the configuration file of it -> server/grafana_export.json)
 
 
@@ -34,7 +32,7 @@ Data received by server must belongs to devices known by the end-user, so every 
 If the password is correct, server will send a message with a boolean value used by the app to give a feedback to the user (and hide the input field).
 The password picked by the user on the first start-up is hashed via MD5 and stored into a file.
 
->There are two version of the app, one is the previous version which hasn't any measurement of cybersecurity and use HTTP protocol, the second one is the final version with HTTPS.
+*There are two version of the app, one is the previous version which hasn't any measurement of cybersecurity and use HTTP protocol, the second one is the final version with HTTPS.*
 
 Here a screenshot of an encrypted packet analysed with Wireshark:
-!(wireshark)[https://github.com/albertomorini/Byce/blob/main/%2Bimg/SniffingPacchettoCifrato.png]
+![WiresharkHTTPS](./+img/SniffingPacchettoCifrato.png)
