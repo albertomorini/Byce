@@ -1,6 +1,6 @@
 # Byce, a battery logger.
 
-Byce is my experimental thesis for my Bachelor's Degree at University of Udin.
+Byce is my experimental thesis for my Bachelor Degree at University of Udin.
 This project provide a platform to monitor the battery level of Androids devices connected to a network.
 
 
@@ -12,7 +12,7 @@ On the server side we can find 'server.js' which is the code developed thus to r
 
 Actually, Byce works on a LAN (Local Area Network), isn't hosted on a public server.
 
-### Development
+#### Development
 The mobile app is created with <a href="https://cordova.apache.org/">Apache Cordova</a>, a JavaScript framework that allows to build mobile apps for Android and iOS.
 > Has been created just an apk for Android, iOS will follows in future.
 
@@ -22,4 +22,16 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 
 2. <a href="https://grafana.com/grafana/">Grafana Visualisation</a> used to create the infographics of data retrieved.
 
-## Cybersecurity
+!(grafana)[https://github.com/albertomorini/Byce/blob/main/%2Bimg/grafanaShot.png]
+> A screenshot of the Grafana's dashboard (there's the configuration file of it -> server/grafana_export.json)
+
+
+#### Cybersecurity
+Data received by server must belongs to devices known by the end-user, so every message have to be authenticated with a password.
+If the password is correct, server will send a message with a boolean value used by the app to give a feedback to the user (and hide the input field).
+The password picked by the user on the first start-up is hashed via MD5 and stored into a file.
+
+>There are two version of the app, one is the previous version which hasn't any measurement of cybersecurity and use HTTP protocol, the second one is the final version with HTTPS.
+
+Here a screenshot of an encrypted packet analysed with Wireshark:
+!(wireshark)[https://github.com/albertomorini/Byce/blob/main/%2Bimg/SniffingPacchettoCifrato.png]
