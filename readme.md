@@ -28,6 +28,28 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 ![grafana](./+img/grafanaShot.png)
 > A screenshot of the Grafana's dashboard (there's the configuration file of it -> server/grafana_export.json)
 
+### Database
+Two tables: 'DEVICES' storing the information about the devices and 'DATALOG' containing the data retrieved by smartphones or tablet.
+> There's a file with all the database query used: db/table creation and grafana query -> server/byce_DB_QueryGrafana.sql
+
+```sql
+CREATE TABLE DEVICES(
+    UID VARCHAR(128) PRIMARY KEY,
+    NAME_DEVICE VARCHAR(128),
+    MODEL VARCHAR(128),
+    OS_VERSION VARCHAR(128)
+);
+
+CREATE TABLE DATALOG(
+    UID VARCHAR(128) NOT NULL,
+    LOG_DATE DATE NOT NULL,
+    LOG_TIME TIME NOT NULL,
+    BAT_LEVEL INTEGER NOT NULL,
+    IN_CHARGE BOOLEAN NOT NULL,
+    PRIMARY KEY (UID, LOG_DATE, LOG_TIME, IN_CHARGE),
+    FOREIGN KEY(UID) REFERENCES DEVICES(UID)
+);
+``
 
 ## Cybersecurity
 Data received by server must belongs to devices known by the end-user, so every message have to be authenticated with a password.
