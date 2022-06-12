@@ -49,7 +49,7 @@ CREATE TABLE DATALOG(
     PRIMARY KEY (UID, LOG_DATE, LOG_TIME, IN_CHARGE),
     FOREIGN KEY(UID) REFERENCES DEVICES(UID)
 );
-``
+```
 
 ## Cybersecurity
 Data received by server must belongs to devices known by the end-user, so every message have to be authenticated with a password.
