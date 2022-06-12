@@ -158,7 +158,7 @@ function storeDataToDB(dataPack){
       //execute the query
       con.query(sql, function (err, result) {
         if (!err){
-            console.log("\tInfo stored to db");
+            console.log("\tInfo stored into db");
         }else{
             console.log(err);
         };
