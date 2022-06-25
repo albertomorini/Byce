@@ -1,15 +1,16 @@
 # Byce, a battery logger.
 
-Byce is my experimental thesis for my Bachelor Degree at <a hfref="https://www.uniud.it/it/didattica/corsi/area-scientifica/scienze-matematiche-informatiche-multimediali-fisiche/laurea/internet-of-things-big-data-web/corso/internet-of-things-big-data-web">University of Udin</a> (class L-31).
+Byce is my experimental thesis for my Bachelor Degree at <a href="https://www.uniud.it/it/didattica/corsi/area-scientifica/scienze-matematiche-informatiche-multimediali-fisiche/laurea/internet-of-things-big-data-web/corso/internet-of-things-big-data-web">University of Udin</a> (class L-31).
 
-This project provide a platform to monitor the battery level of Androids devices connected to a network; so this project is self hosted and (actually) works only on LAN.
-
+This project provide a platform to monitor the battery level of Androids devices connected to a network; this solution is self hosted so works only on LAN (for now).
 
 ## Architecture
 
 This solution is made by two submodules: the app mobile and the server.
-The mobile app will retrieve the related info, and next share the data with the server(.js) via HTTPS messages.
-On the server side we can find 'server.js' which is the code developed thus to receive data and store it into a MySql database; an other function is the authentication of the devices which sees the server checks the password provided in each https message with an existing one (created by the end-user on the first start up).
+
+The **mobile app** will retrieve the related info, and next share the data with the server(.js) via HTTPS messages.
+
+On the **server** side we can find 'server.js' which is the code developed thus to receive data and store it into a MySql database; an other function is the authentication of the devices which sees the server checks the password provided in each https message with an existing one (created by the end-user on the first start up).
 
 
 ### Development
