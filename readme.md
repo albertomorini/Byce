@@ -1,23 +1,23 @@
 # Byce, a battery logger.
 
-Byce is my experimental thesis for my Bachelor Degree at University of Udin.
-This project provide a platform to monitor the battery level of Androids devices connected to a network.
+Byce is my experimental thesis for my Bachelor Degree at <a hfref="https://www.uniud.it/it/didattica/corsi/area-scientifica/scienze-matematiche-informatiche-multimediali-fisiche/laurea/internet-of-things-big-data-web/corso/internet-of-things-big-data-web">University of Udin</a> (class L-31).
+
+This project provide a platform to monitor the battery level of Androids devices connected to a network; so this project is self hosted and (actually) works only on LAN.
 
 
 ## Architecture
 
 This solution is made by two submodules: the app mobile and the server.
 The mobile app will retrieve the related info, and next share the data with the server(.js) via HTTPS messages.
-On the server side we can find 'server.js' which is the code developed thus to receive data and store it into a database; an other function is the authentication of the devices which sees the server checks the password provided in each https message with an existing one (created by the end-user on the first start up).
+On the server side we can find 'server.js' which is the code developed thus to receive data and store it into a MySql database; an other function is the authentication of the devices which sees the server checks the password provided in each https message with an existing one (created by the end-user on the first start up).
 
-Actually, Byce works on a LAN (Local Area Network), isn't hosted on a public server.
 
 ### Development
-The mobile app is created with <a href="https://cordova.apache.org/">Apache Cordova</a>, a JavaScript framework that allows to build mobile apps for Android and iOS.
+The mobile app is created with <a href="https://cordova.apache.org/">Apache Cordova</a>, a JavaScript framework that allows to build hybrid apps for Android and iOS.
 
 The mobile app
 ![ByceGUI](./+img/byceGUI.png)
-> Has been created just an apk for Android, iOS will follows in future.
+> Actually has been created just an apk for Android, iOS will follows in future.
 
 Server's code is made with JavaScript and executed by <a href="https://nodejs.org/en/">NodeJS</a>, but, isn't the only technology! There are other self-hosted software used to provide a full solution, in order:
 
