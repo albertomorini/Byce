@@ -15,10 +15,10 @@ On the **server** side we can find 'server.js' which is the code developed thus 
 
 ### Development
 The mobile app is created with <a href="https://cordova.apache.org/">Apache Cordova</a>, a JavaScript framework that allows to build hybrid apps for Android and iOS.
+At this moment has been created only the apk for Android, iOS will follows in future.
 
-The mobile app
 ![ByceGUI](./+img/byceGUI.png)
-> Actually has been created just an apk for Android, iOS will follows in future.
+> Example of Byce's interface (startup, wrong password, correct password)
 
 Server's code is made with JavaScript and executed by <a href="https://nodejs.org/en/">NodeJS</a>, but, isn't the only technology! There are other self-hosted software used to provide a full solution, in order:
 
@@ -31,7 +31,7 @@ Server's code is made with JavaScript and executed by <a href="https://nodejs.or
 
 ### Database
 Two tables: 'DEVICES' storing the information about the devices and 'DATALOG' containing the data retrieved by smartphones or tablet.
-> There's a file with all the database query used: db/table creation and grafana query -> server/byce_DB_QueryGrafana.sql
+> There's a file with all the database query used (db/table creation and grafana query) -> server/byce_DB_QueryGrafana.sql
 
 ```sql
 CREATE TABLE DEVICES(
