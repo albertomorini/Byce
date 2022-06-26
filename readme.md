@@ -54,10 +54,26 @@ CREATE TABLE DATALOG(
 
 ## Cybersecurity
 Data received by server must belongs to devices known by the end-user, so every message have to be authenticated with a password.
-If the password is correct, server will send a message with a boolean value used by the app to give a feedback to the user (and hide the input field).
 The password picked by the user on the first start-up is hashed via MD5 and stored into a file.
+So, at every message received, server will hash (MD5) the password provided in the HTTPS packet and will compare the digest with the one stored into the file; then, server will repley with a boolean value used by the app to give a feedback to the end user.
+
+
+In way to keep the communication secret just to server and client, it's used the HTTPS protocol, which create an end-to-end channel between two peers (server and the mobile device).
+For an HTTPS server is required a X.509 Certificate, which can confirm the idenity. 
+In way to avoid the process of get a Certificate by a Certification Authority, has been adopted a self-signed certified. This solution allows the MITM (Man In The Middle) attack, which is a compromise allowed only for this thesis, on another scenario is strongly suggested to have a real certificate.
 
 *There are two version of the app, one is the previous version which hasn't any measurement of cybersecurity and use HTTP protocol, the second one is the final version with HTTPS.*
 
 Here a screenshot of an encrypted packet analysed with Wireshark:
 ![WiresharkHTTPS](./+img/SniffingPacchettoCifrato.png)
+
+## Future extensions
+
+The platform can be extended to future develoments, for example:
+
+1) create the iOS app.
+2) retrieve more information, like CPU usage, free and used memory etc.
+3) WAN scenario: with a pubblic Byce server which recive data from different users.
+4) Data analysis in way to create a Business Intelligence, thus to give a user a valuation of the cost of charging or find out faulty devices.
+
+
