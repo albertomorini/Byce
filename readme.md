@@ -75,5 +75,3 @@ The platform can be extended to future develoments, for example:
 2) retrieve more information, like CPU usage, free and used memory etc.
 3) WAN scenario: with a pubblic Byce server which recive data from different users.
 4) Data analysis in way to create a Business Intelligence, thus to give a user a valuation of the cost of charging or find out faulty devices.
-
-
